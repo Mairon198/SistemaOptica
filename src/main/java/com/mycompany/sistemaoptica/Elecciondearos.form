@@ -124,11 +124,6 @@
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="btnregistrar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="182" max="-2" attributes="0"/>
-              </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -150,9 +145,7 @@
                           <Component id="TxtDNI" min="-2" pref="37" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                  <Component id="btnregistrar" min="-2" pref="49" max="-2" attributes="0"/>
-                  <EmptySpace pref="20" max="32767" attributes="0"/>
+                  <EmptySpace pref="100" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -194,14 +187,6 @@
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="text" type="java.lang.String" value="Telefono"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="btnregistrar">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Registrar"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnregistrarActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JComboBox" name="jComboBox1">
           <Properties>

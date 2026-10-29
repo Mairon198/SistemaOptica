@@ -36,7 +36,6 @@ public class Elecciondearos extends javax.swing.JFrame {
         TxtDNI = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        btnregistrar = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -84,9 +83,6 @@ public class Elecciondearos extends javax.swing.JFrame {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Telefono");
 
-        btnregistrar.setText("Registrar");
-        btnregistrar.addActionListener(this::btnregistrarActionPerformed);
-
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -107,10 +103,6 @@ public class Elecciondearos extends javax.swing.JFrame {
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
                     .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnregistrar)
-                .addGap(182, 182, 182))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,9 +120,7 @@ public class Elecciondearos extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(TxtDNI, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(31, 31, 31)
-                .addComponent(btnregistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -165,30 +155,6 @@ public class Elecciondearos extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_TxtDNIActionPerformed
 
-    private void btnregistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregistrarActionPerformed
-        String dni = TxtDNI.getText().trim();
-        String nombre = Txtnombre.getText().trim();
-        String telefono = Txttelefono.getText().trim();
-        String correo = txtcorreo.getText().trim();
-
-        if (dni.isEmpty() || nombre.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.", "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        try {
-            javax.swing.JOptionPane.showMessageDialog(this, "Cliente registrado exitosamente.");
-
-            TxtDNI.setText("");
-            Txtnombre.setText("");
-            Txttelefono.setText("");
-            txtcorreo.setText("");
-
-        } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Error al registrar: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnregistrarActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -217,7 +183,6 @@ public class Elecciondearos extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField TxtDNI;
     private javax.swing.JTextField Txtnombre;
-    private javax.swing.JButton btnregistrar;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
