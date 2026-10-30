@@ -2,7 +2,7 @@ package util;
 
 import Conexion.ConexionDB;
 import dao.UsuarioDAO;
-import dao.UsuarioDAOImpl;
+import daoImplementacion.UsuarioDAOImpl;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

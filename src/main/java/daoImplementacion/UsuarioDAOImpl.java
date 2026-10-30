@@ -1,4 +1,4 @@
-package dao;
+package daoImplementacion;
 
 import Conexion.ConexionDB;
 import java.sql.Connection;
@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDateTime;
+import dao.UsuarioDAO;
 import modelo.Rol;
 import modelo.Usuario;
 
