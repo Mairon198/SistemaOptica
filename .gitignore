@@ -1,1 +1,4 @@
 /target/
+
+# Datos de conexión (contienen la contraseña): cada quien tiene su copia local
+config.properties

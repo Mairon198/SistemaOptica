@@ -1,4 +1,4 @@
-package daoImplementacion;
+package daoimpl;
 
 import java.sql.*;
 import modelo.Producto;

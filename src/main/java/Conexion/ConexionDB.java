@@ -15,7 +15,8 @@ static {
     try (FileInputStream in = new FileInputStream("config.properties")) {
         CONFIG.load(in);
     } catch (IOException e) {
-        throw new RuntimeException("No se encontró config.properties en la carpeta del proyecto", e);
+        throw new RuntimeException("No se encontró config.properties en la carpeta del proyecto. "
+            + "Copie config.properties.example con el nombre config.properties y escriba sus datos de conexión.", e);
     }
 }
 

@@ -18,7 +18,7 @@ public final class Navegador {
         JFrame ventana;
         switch (usuario.getRol()) {
             case VENDEDOR:
-                ventana = new VendedorFrame(usuario);
+                ventana = new FrmMenuVendedor(usuario);
                 break;
             case CLIENTE:
                 ventana = new ClienteFrame(usuario);

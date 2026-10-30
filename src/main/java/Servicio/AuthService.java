@@ -1,7 +1,7 @@
 package servicio;
 
 import dao.UsuarioDAO;
-import daoImplementacion.UsuarioDAOImpl;
+import dao.impl.UsuarioDAOImpl;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import modelo.Usuario;

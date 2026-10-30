@@ -1,4 +1,4 @@
-package daoImplementacion;
+package dao.impl;
 
 import Conexion.ConexionDB;
 import dao.AccesorioDAO;
