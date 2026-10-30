@@ -88,7 +88,7 @@
               <Font name="Segoe UI" size="24" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="Registro de Clientes"/>
+            <Property name="text" type="java.lang.String" value="ELECCION DE AROS"/>
           </Properties>
         </Component>
       </SubComponents>

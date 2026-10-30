@@ -46,7 +46,7 @@ public class Elecciondearos extends javax.swing.JFrame {
         jLabel1.setBackground(new java.awt.Color(63, 136, 143));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Registro de Clientes");
+        jLabel1.setText("ELECCION DE AROS");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
