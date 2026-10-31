@@ -58,7 +58,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value=" "/>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="30" green="30" red="180" type="rgb"/>
+              <Color blue="1e" green="1e" red="b4" type="rgb"/>
             </Property>
           </Properties>
           <Constraints>
