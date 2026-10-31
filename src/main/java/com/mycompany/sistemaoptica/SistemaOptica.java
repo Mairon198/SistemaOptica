@@ -1,10 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
-//Solo estamos haciendo pruebas de los commit y push.
 
 package com.mycompany.sistemaoptica;
+
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import vista.LoginFrame;
 
 /**
  *
@@ -12,7 +11,12 @@ package com.mycompany.sistemaoptica;
  */
 public class SistemaOptica {
 
-      public static void main(String[] args) {
-        new RegistroClientes().setVisible(true);
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            // se usa el aspecto por defecto
+        }
+        SwingUtilities.invokeLater(() -> new LoginFrame().setVisible(true));
     }
 }
