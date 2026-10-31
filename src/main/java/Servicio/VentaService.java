@@ -21,13 +21,9 @@ import modelo.Usuario;
 import modelo.Vendedor;
 import modelo.Venta;
 
-/**
- * Lógica de negocio de las ventas: arma la venta, calcula subtotal, impuesto y total,
- * valida las reglas y la registra (el DAO descuenta el stock en la misma transacción).
- */
 public class VentaService {
 
-    /** ISV de Honduras: 15 %. */
+    //ISV 15%
     public static final BigDecimal TASA_IMPUESTO = new BigDecimal("0.15");
 
     private final VentaDAO ventaDAO;
@@ -69,7 +65,6 @@ public class VentaService {
     }
 
 
-    /** Crea una venta vacía a nombre del vendedor que inició sesión. */
     public Venta nuevaVenta(Usuario vendedorEnSesion) {
         Venta venta = new Venta();
         if (vendedorEnSesion != null && vendedorEnSesion.getIdVendedor() != null) {
@@ -82,10 +77,7 @@ public class VentaService {
         return venta;
     }
 
-    /**
-     * Agrega un producto a la venta. Si ya estaba, suma la cantidad.
-     * Verifica que no se pida más de lo que hay en stock.
-     */
+    //Agrega un producto a la venta, si ya estaba suma la cantidad
     public void agregarProducto(Venta venta, Producto producto, int cantidad) throws ValidacionException {
         if (producto == null) {
             throw new ValidacionException("Seleccione un producto.");
@@ -120,7 +112,7 @@ public class VentaService {
         }
     }
 
-    /** Subtotal = suma de (precio x cantidad); impuesto = subtotal x 15 %; total = subtotal + impuesto. */
+    //Calcula subtotal, isv y total
     public void calcularTotales(Venta venta) {
         BigDecimal subtotal = BigDecimal.ZERO;
         for (DetalleVenta d : venta.getDetalles()) {
@@ -134,10 +126,7 @@ public class VentaService {
     }
 
 
-    /**
-     * Valida y guarda la venta. Al guardarse, el stock de cada producto vendido
-     * se descuenta automáticamente.
-     */
+    //Valida y guarda la venta (descuenta el stock)
     public void registrar(Venta venta) throws ValidacionException {
         if (venta.getVendedor() == null || venta.getVendedor().getIdVendedor() == 0) {
             throw new ValidacionException("Su usuario no está asociado a un vendedor. No puede registrar ventas.");
@@ -178,7 +167,7 @@ public class VentaService {
         }
     }
 
-    /** Después de vender: aros de esta venta que quedaron con stock bajo. */
+    //Aros que quedaron con stock bajo despues de la venta
     public List<String> avisosStockBajo(Venta venta) {
         List<String> avisos = new ArrayList<>();
         for (DetalleVenta d : venta.getDetalles()) {

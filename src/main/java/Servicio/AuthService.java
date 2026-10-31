@@ -7,10 +7,6 @@ import java.time.format.DateTimeFormatter;
 import modelo.Usuario;
 import util.SeguridadUtil;
 
-/**
- * Autenticación: valida usuario/correo + contraseña, con bloqueo temporal
- * tras varios intentos fallidos.
- */
 public class AuthService {
 
     public static final int MAX_INTENTOS = 5;
@@ -27,10 +23,6 @@ public class AuthService {
         this.usuarioDAO = usuarioDAO;
     }
 
-    /**
-     * @return el usuario autenticado
-     * @throws AuthException con el mensaje a mostrar si el acceso es denegado
-     */
     public Usuario login(String identificador, char[] password) throws AuthException {
         if (identificador == null || identificador.isBlank() || password == null || password.length == 0) {
             throw new AuthException("Ingrese su usuario o correo y su contraseña.");
@@ -43,7 +35,7 @@ public class AuthService {
         }
 
         if (u == null) {
-            SeguridadUtil.verificacionFalsa(password); // mismo tiempo que un usuario real
+            SeguridadUtil.verificacionFalsa(password);
             throw new AuthException(MSG_CREDENCIALES);
         }
         if (!u.isActivo()) {
@@ -70,7 +62,7 @@ public class AuthService {
         }
 
         usuarioDAO.registrarAccesoExitoso(u.getIdUsuario());
-        u.setPasswordHash(null); // no se conserva el hash en memoria
+        u.setPasswordHash(null);
         return u;
     }
 }

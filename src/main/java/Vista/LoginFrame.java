@@ -37,7 +37,7 @@ public class LoginFrame extends JFrame {
         setMinimumSize(new Dimension(380, getHeight()));
         setResizable(false);
         setLocationRelativeTo(null);
-        getRootPane().setDefaultButton(btnIngresar); // Enter = Ingresar
+        getRootPane().setDefaultButton(btnIngresar);
     }
 
     private void construirInterfaz() {
@@ -89,7 +89,6 @@ public class LoginFrame extends JFrame {
         btnIngresar.setEnabled(false);
         btnIngresar.setText("Verificando...");
 
-        // Fuera del hilo de la interfaz para no congelar la ventana
         new SwingWorker<Usuario, Void>() {
             @Override
             protected Usuario doInBackground() throws Exception {

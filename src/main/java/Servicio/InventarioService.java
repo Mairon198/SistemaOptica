@@ -14,13 +14,9 @@ import modelo.Aro;
 import modelo.Luna;
 import modelo.Producto;
 
-/**
- * Lógica de negocio del inventario: valida los datos antes de llamar a los DAO
- * y detecta los aros con stock bajo.
- */
 public class InventarioService {
 
-    /** Un aro tiene stock bajo cuando le quedan menos de estas unidades. */
+    //Limite para la alerta de stock bajo
     public static final int LIMITE_STOCK_BAJO = 5;
 
     private final AroDAO aroDAO;
@@ -60,7 +56,6 @@ public class InventarioService {
         }
     }
 
-    /** Aros activos con menos de LIMITE_STOCK_BAJO unidades. */
     public List<Aro> arosConStockBajo() {
         List<Aro> bajos = new ArrayList<>();
         for (Aro a : aroDAO.listar()) {
@@ -128,7 +123,7 @@ public class InventarioService {
     }
 
 
-    /** Productos activos con stock disponible del tipo indicado (ARO, LUNA o ACCESORIO). */
+    //Productos con stock para las ventas
     public List<Producto> listarDisponibles(String tipo) {
         List<? extends Producto> todos;
         switch (tipo) {

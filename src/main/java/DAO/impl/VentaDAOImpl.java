@@ -27,7 +27,6 @@ public class VentaDAOImpl implements VentaDAO {
 
     private String ultimoError;
 
-    /** Mensaje del último error ocurrido en registrar() (para mostrarlo en pantalla). */
     public String getUltimoError() {
         return ultimoError;
     }
@@ -50,7 +49,7 @@ public class VentaDAOImpl implements VentaDAO {
             }
             con.setAutoCommit(false);
 
-            // 1) Cabecera de la venta
+            //Guardar la venta
             int idVenta;
             try (PreparedStatement ps = con.prepareStatement(sqlVenta, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, venta.getNumeroVenta());
@@ -76,7 +75,7 @@ public class VentaDAOImpl implements VentaDAO {
                 }
             }
 
-            // 2) Descontar stock y 3) guardar cada detalle
+            //Descontar stock y guardar los detalles
             try (PreparedStatement psStock = con.prepareStatement(sqlStock);
                  PreparedStatement psDetalle = con.prepareStatement(sqlDetalle)) {
                 for (DetalleVenta d : venta.getDetalles()) {

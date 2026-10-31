@@ -18,7 +18,6 @@ public final class SeguridadUtil {
     private static final int BITS_HASH = 256;
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    // Hash falso para igualar el tiempo de respuesta cuando el usuario no existe
     private static final String HASH_FALSO = hashear("falso-no-usar".toCharArray());
 
     private SeguridadUtil() {
@@ -42,13 +41,12 @@ public final class SeguridadUtil {
             byte[] salt = Base64.getDecoder().decode(partes[1]);
             byte[] esperado = Base64.getDecoder().decode(partes[2]);
             byte[] calculado = derivar(password, salt, iteraciones);
-            return MessageDigest.isEqual(esperado, calculado); // comparación en tiempo constante
+            return MessageDigest.isEqual(esperado, calculado);
         } catch (IllegalArgumentException e) {
             return false;
         }
     }
 
-    /** Gasta el mismo tiempo que una verificación real (evita revelar si el usuario existe). */
     public static void verificacionFalsa(char[] password) {
         verificar(password, HASH_FALSO);
     }
