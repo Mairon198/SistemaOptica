@@ -142,6 +142,23 @@ CREATE TABLE dbo.detalle_venta (
 );
 GO
 
+-- Aros apartados por los clientes desde el catalogo
+IF OBJECT_ID('dbo.apartado', 'U') IS NULL
+CREATE TABLE dbo.apartado (
+    id_apartado    INT IDENTITY(1,1) CONSTRAINT PK_apartado PRIMARY KEY,
+    id_cliente     INT NOT NULL CONSTRAINT FK_apartado_cliente REFERENCES dbo.cliente(idCliente),
+    id_producto    INT NOT NULL CONSTRAINT FK_apartado_aro     REFERENCES dbo.aro(id_producto),
+    fecha          DATETIME2     NOT NULL CONSTRAINT DF_apartado_fecha  DEFAULT SYSDATETIME(),
+    estado         VARCHAR(20)   NOT NULL CONSTRAINT DF_apartado_estado DEFAULT 'APARTADO'
+                   CONSTRAINT CK_apartado_estado CHECK (estado IN ('APARTADO', 'VENDIDO', 'CANCELADO')),
+    observaciones  VARCHAR(255)  NULL
+);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'UX_apartado_activo')
+CREATE UNIQUE INDEX UX_apartado_activo ON dbo.apartado(id_cliente, id_producto) WHERE estado = 'APARTADO';
+GO
+
 
 -- 4. DATOS DE EJEMPLO (solo si las tablas están vacías)
 
