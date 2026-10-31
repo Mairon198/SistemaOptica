@@ -25,7 +25,7 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
         this.usuario = usuario;
         initComponents();
         lblBienvenida.setText("Bienvenido, " + usuario.getNombreMostrar());
-        setSize(620, 400);
+        setSize(620, 450);
         setLocationRelativeTo(null);
 
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -55,6 +55,7 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
         lblRol = new javax.swing.JLabel();
         pnlOpciones = new javax.swing.JPanel();
         btnInventario = new javax.swing.JButton();
+        btnMediciones = new javax.swing.JButton();
         btnNuevaVenta = new javax.swing.JButton();
         btnHistorial = new javax.swing.JButton();
         pnlPie = new javax.swing.JPanel();
@@ -83,6 +84,11 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
         btnInventario.setText("Gestión de inventario (aros, lunas, accesorios)");
         btnInventario.addActionListener(this::btnInventarioActionPerformed);
         pnlOpciones.add(btnInventario);
+
+        btnMediciones.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnMediciones.setText("Mediciones de clientes");
+        btnMediciones.addActionListener(this::btnMedicionesActionPerformed);
+        pnlOpciones.add(btnMediciones);
 
         btnNuevaVenta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnNuevaVenta.setText("Registrar venta");
@@ -115,6 +121,10 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
     private void btnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioActionPerformed
         new FrmInventario().setVisible(true);
     }//GEN-LAST:event_btnInventarioActionPerformed
+
+    private void btnMedicionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMedicionesActionPerformed
+        new FrmMediciones().setVisible(true);
+    }//GEN-LAST:event_btnMedicionesActionPerformed
 
     private void btnNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaVentaActionPerformed
         new FrmVentas(usuario).setVisible(true);
@@ -169,6 +179,7 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
     private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnHistorial;
     private javax.swing.JButton btnInventario;
+    private javax.swing.JButton btnMediciones;
     private javax.swing.JButton btnNuevaVenta;
     private javax.swing.JLabel lblAlertaStock;
     private javax.swing.JLabel lblBienvenida;

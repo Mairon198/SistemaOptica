@@ -13,4 +13,8 @@ public interface MedicionDAO {
     ArrayList<Medicion> listarPorCliente(int idCliente);
     
     List<Medicion> obtenerPorCliente(int idCliente);
+
+    boolean insertar(Medicion medicion);
+
+    boolean actualizar(Medicion medicion);
 }

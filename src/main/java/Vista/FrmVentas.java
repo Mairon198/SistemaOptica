@@ -53,6 +53,13 @@ public class FrmVentas extends javax.swing.JFrame {
             cargarClientes();
             cargarProductos();
         });
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowActivated(java.awt.event.WindowEvent e) {
+                UtilVista.ejecutar(FrmVentas.this, FrmVentas.this::cargarMediciones);
+            }
+        });
     }
 
     /**
@@ -357,9 +364,18 @@ public class FrmVentas extends javax.swing.JFrame {
     private void cargarMediciones() {
         cargando = true;
         try {
+            Medicion anterior = (Medicion) cboMedicion.getSelectedItem();
             Cliente c = (Cliente) cboCliente.getSelectedItem();
             List<Medicion> mediciones = c == null ? List.of() : servicio.listarMediciones(c.getIdCliente());
             cboMedicion.setModel(new DefaultComboBoxModel<>(mediciones.toArray(new Medicion[0])));
+            if (anterior != null) {
+                for (Medicion m : mediciones) {
+                    if (m.getIdMedicion() == anterior.getIdMedicion()) {
+                        cboMedicion.setSelectedItem(m);
+                        break;
+                    }
+                }
+            }
         } finally {
             cargando = false;
         }
