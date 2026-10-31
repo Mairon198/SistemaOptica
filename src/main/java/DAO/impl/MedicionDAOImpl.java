@@ -32,6 +32,25 @@ public class MedicionDAOImpl implements MedicionDAO {
         }
         return lista;
     }
+    
+    @Override
+public java.util.List<Medicion> obtenerPorCliente(int idCliente) {
+    ArrayList<Medicion> lista = new ArrayList<>();
+    String sql = SELECT_MEDICIONES + "WHERE id_cliente = ? ORDER BY fecha DESC";
+    try (Connection con = ConexionDB.getConexion();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, idCliente);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(crearMedicion(rs));
+            }
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al listar mediciones: " + e.getMessage());
+    }
+    return lista;
+}
+    
 
     @Override
     public Medicion buscarPorId(int idMedicion) {
@@ -73,5 +92,10 @@ public class MedicionDAOImpl implements MedicionDAO {
     private Integer enteroONulo(ResultSet rs, String columna) throws SQLException {
         int valor = rs.getInt(columna);
         return rs.wasNull() ? null : valor;
+    }
+
+    @Override
+    public ArrayList<Medicion> listar() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
