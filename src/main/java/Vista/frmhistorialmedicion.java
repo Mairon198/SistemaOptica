@@ -32,6 +32,10 @@ public class frmhistorialmedicion extends javax.swing.JFrame {
     // Constructor que recibe el DNI y carga los datos automáticamente al abrirse
     public frmhistorialmedicion(String dniCliente) {
         initComponents();
+        setLocationRelativeTo(null);
+        TxtDNI.setText(dniCliente);
+        TxtDNI.setEditable(false);
+        TxtNombreCliente.setEditable(false);
         if (dniCliente != null && !dniCliente.isEmpty()) {
             cargarHistorialDirecto(dniCliente);
         }
@@ -88,7 +92,7 @@ public class frmhistorialmedicion extends javax.swing.JFrame {
         TblHistorial = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 

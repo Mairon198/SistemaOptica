@@ -18,7 +18,7 @@ public final class Navegador {
                 ventana = new FrmMenuVendedor(usuario);
                 break;
             case CLIENTE:
-                ventana = new ClienteFrame(usuario);
+                ventana = new FrmMenuCliente(usuario);
                 break;
             default:
                 JOptionPane.showMessageDialog(null, "Rol no reconocido.", "Error", JOptionPane.ERROR_MESSAGE);

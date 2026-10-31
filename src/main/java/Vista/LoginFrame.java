@@ -26,6 +26,8 @@ public class LoginFrame extends JFrame {
     private final JTextField txtUsuario = new JTextField(20);
     private final JPasswordField txtPassword = new JPasswordField(20);
     private final JButton btnIngresar = new JButton("Ingresar");
+    private final JButton btnCrearCuenta = new JButton("Crear cuenta");
+    private final JButton btnSalir = new JButton("Salir");
     private final JLabel lblMensaje = new JLabel(" ", SwingConstants.CENTER);
     private final AuthService authService = new AuthService();
 
@@ -76,7 +78,23 @@ public class LoginFrame extends JFrame {
         gc.insets = new Insets(8, 0, 0, 0);
         panel.add(btnIngresar, gc);
 
+        JPanel botones = new JPanel(new java.awt.GridLayout(1, 2, 8, 0));
+        botones.add(btnCrearCuenta);
+        botones.add(btnSalir);
+        gc.gridy = 7;
+        gc.insets = new Insets(8, 0, 0, 0);
+        panel.add(botones, gc);
+
         btnIngresar.addActionListener(e -> intentarLogin());
+        btnCrearCuenta.addActionListener(e -> {
+            Vista.RegistroClientes registro = new Vista.RegistroClientes();
+            registro.setLocationRelativeTo(this);
+            registro.setVisible(true);
+        });
+        btnSalir.addActionListener(e -> {
+            dispose();
+            System.exit(0);
+        });
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(panel, BorderLayout.CENTER);

@@ -3,11 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package Vista;
-import dao.ClienteDAO;
-import dao.UsuarioDAO;
+import javax.swing.JOptionPane;
 import modelo.Cliente;
-import modelo.Usuario;
-import java.time.LocalDateTime;
+import servicio.ClienteService;
+import servicio.ValidacionException;
 /**
  *
  * @author THINKPAD P15s
@@ -28,6 +27,7 @@ public class RegistroClientes extends javax.swing.JFrame {
     private void limpiarCampos() {
     TxtDNI.setText("");
     Txtnombre.setText("");
+    txtApellidos.setText("");
     Txttelefono.setText("");
     txtcorreo.setText("");
     txtDireccion.setText("");
@@ -47,6 +47,8 @@ public class RegistroClientes extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         Txtnombre = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        lblApellidos = new javax.swing.JLabel();
+        txtApellidos = new javax.swing.JTextField();
         TxtDNI = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -54,13 +56,13 @@ public class RegistroClientes extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         txtcorreo = new javax.swing.JTextField();
         btnregistrar = new javax.swing.JButton();
-        txtContra = new javax.swing.JTextField();
+        txtContra = new javax.swing.JPasswordField();
         jLabel6 = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -68,7 +70,11 @@ public class RegistroClientes extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Nombre");
+        jLabel2.setText("Nombres");
+
+        lblApellidos.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblApellidos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblApellidos.setText("Apellidos");
 
         TxtDNI.addActionListener(this::TxtDNIActionPerformed);
 
@@ -137,7 +143,10 @@ public class RegistroClientes extends javax.swing.JFrame {
                                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                 .addComponent(Txtnombre)
-                                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(txtApellidos)
+                                                .addComponent(lblApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addGap(49, 49, 49)
                                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -158,7 +167,7 @@ public class RegistroClientes extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -171,6 +180,10 @@ public class RegistroClientes extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Txtnombre, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblApellidos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -227,50 +240,22 @@ public class RegistroClientes extends javax.swing.JFrame {
     }//GEN-LAST:event_txtcorreoActionPerformed
 
     private void btnregistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnregistrarActionPerformed
-String dni = TxtDNI.getText();
-String nombre = Txtnombre.getText();
-String telefono = Txttelefono.getText();
-String correo = txtcorreo.getText();
-String direccion = txtDireccion.getText();
-String password = txtContra.getText();
-
-Cliente cliente = new Cliente();
-cliente.setDni(dni);
-cliente.setNombres(nombre);
-cliente.setTelefono(telefono);
-cliente.setEmail(correo);
-cliente.setDireccion(direccion);
-cliente.setFechaRegistro(LocalDateTime.now());
-
-ClienteDAO clienteDAO = new dao.impl.ClienteDAOImpl();
-int idClienteGenerado = clienteDAO.insertarYObtenerId(cliente);
-
-if (idClienteGenerado > 0) {
-    Usuario usuario = new Usuario();
-    usuario.setUsername(nombre);
-    usuario.setEmail(correo);
-    usuario.setPasswordHash(password);
-    usuario.setRol(modelo.Rol.CLIENTE);
-    usuario.setIdCliente(idClienteGenerado);
-    usuario.setActivo(true);
-
-    UsuarioDAO usuarioDAO = new dao.impl.UsuarioDAOImpl();
-    boolean usuarioExitoso = usuarioDAO.insertar(usuario);
-
-    if (usuarioExitoso) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Cliente y usuario registrados exitosamente.");
-        TxtDNI.setText("");
-        Txtnombre.setText("");
-        Txttelefono.setText("");
-        txtcorreo.setText("");
-        txtDireccion.setText("");
-        txtContra.setText("");
-    } else {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error al registrar el usuario asociado.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-    }
-} else {
-    javax.swing.JOptionPane.showMessageDialog(this, "Error al registrar el cliente.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-}
+        Cliente cliente = new Cliente();
+        cliente.setNombres(Txtnombre.getText());
+        cliente.setApellidos(txtApellidos.getText());
+        cliente.setDni(TxtDNI.getText());
+        cliente.setTelefono(Txttelefono.getText());
+        cliente.setEmail(txtcorreo.getText());
+        cliente.setDireccion(txtDireccion.getText());
+        try {
+            new ClienteService().registrar(cliente, txtContra.getPassword());
+            JOptionPane.showMessageDialog(this, "Cuenta creada correctamente.\nYa puede iniciar sesión con su correo o su DNI.");
+            dispose();
+        } catch (ValidacionException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Atención", JOptionPane.WARNING_MESSAGE);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "No se pudo registrar. Verifique la conexión con la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnregistrarActionPerformed
 
     private void txtContraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContraActionPerformed
@@ -313,6 +298,8 @@ if (idClienteGenerado > 0) {
     private javax.swing.JButton btnregistrar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel lblApellidos;
+    private javax.swing.JTextField txtApellidos;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -320,7 +307,7 @@ if (idClienteGenerado > 0) {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JTextField txtContra;
+    private javax.swing.JPasswordField txtContra;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtcorreo;
     // End of variables declaration//GEN-END:variables
