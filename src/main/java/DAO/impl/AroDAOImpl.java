@@ -2,6 +2,7 @@ package dao.impl;
 
 import Conexion.ConexionDB;
 import dao.AroDAO;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import modelo.Aro;
@@ -33,6 +34,50 @@ public class AroDAOImpl implements AroDAO {
     public ArrayList<Aro> buscar(String texto) {
         String sql = SELECT_AROS + "WHERE p.activo = 1 AND (p.codigo LIKE ? OR p.nombre LIKE ? OR p.marca LIKE ?) ORDER BY p.nombre";
         return consultar(sql, "%" + texto.trim() + "%");
+    }
+
+    @Override
+    public ArrayList<Aro> listarFiltrado(String marca, String material, String forma,
+                                         BigDecimal precioMin, BigDecimal precioMax) {
+        StringBuilder sql = new StringBuilder(SELECT_AROS + "WHERE p.activo = 1 AND p.stock > 0");
+        ArrayList<Object> params = new ArrayList<>();
+        if (marca != null) {
+            sql.append(" AND p.marca = ?");
+            params.add(marca);
+        }
+        if (material != null) {
+            sql.append(" AND a.material = ?");
+            params.add(material);
+        }
+        if (forma != null) {
+            sql.append(" AND a.forma = ?");
+            params.add(forma);
+        }
+        if (precioMin != null) {
+            sql.append(" AND p.precio >= ?");
+            params.add(precioMin);
+        }
+        if (precioMax != null) {
+            sql.append(" AND p.precio <= ?");
+            params.add(precioMax);
+        }
+        sql.append(" ORDER BY p.precio, p.nombre");
+
+        ArrayList<Aro> lista = new ArrayList<>();
+        try (Connection con = ConexionDB.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(crearAro(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
     }
 
     @Override

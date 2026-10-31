@@ -1,37 +1,51 @@
 package vista;
 
-import dao.AroDAO;
-import dao.impl.AroDAOImpl;
+import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.table.DefaultTableModel;
+import modelo.Apartado;
 import modelo.Aro;
-import Conexion.ConexionDB;
-import javax.swing.JOptionPane;
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+import modelo.Usuario;
+import servicio.CatalogoService;
+import servicio.ValidacionException;
+import util.Sesion;
 
 
-/**
- *
- * @author THINKPAD P15s
- */
 public class Elecciondearos extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Elecciondearos.class.getName());
-    private AroDAO dao;
-    
-    /**
-     * Creates new form Elecciondearos
-     */
+
+    private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final String TODOS = "Todos";
+
+    private final CatalogoService servicio = new CatalogoService();
+    private final Usuario usuario;
+    private final DefaultTableModel modeloAros = UtilVista.modeloTabla(
+            "Código", "Nombre", "Marca", "Material", "Forma", "Color", "Género", "Medidas", "Precio", "Disponibles");
+    private final DefaultTableModel modeloApartados = UtilVista.modeloTabla(
+            "N.º", "Fecha", "Código", "Aro", "Marca", "Precio", "Estado", "Observación");
+    private List<Aro> aros = new ArrayList<>();
+    private List<Apartado> apartados = new ArrayList<>();
+
     public Elecciondearos() {
+        this(Sesion.getUsuario());
+    }
+
+    public Elecciondearos(Usuario usuario) {
+        this.usuario = usuario;
         initComponents();
-       this.dao = new AroDAOImpl();
-    
-        cboForma.removeAllItems();
-        cboForma.addItem("Redondo");
-        cboForma.addItem("Rectangular");
-        
+        tblAros.setModel(modeloAros);
+        tblApartados.setModel(modeloApartados);
+        tblAros.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblApartados.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblApartados.getColumnModel().getColumn(0).setMaxWidth(45);
+        UtilVista.ejecutar(this, () -> {
+            cargarOpciones();
+            filtrar();
+            cargarApartados();
+        });
     }
 
     /**
@@ -43,244 +57,265 @@ public class Elecciondearos extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel3 = new javax.swing.JPanel();
-        txtmaterial = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        txtColor = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        pnlEncabezado = new javax.swing.JPanel();
+        lblTitulo = new javax.swing.JLabel();
+        lblIndicacion = new javax.swing.JLabel();
+        tabCatalogo = new javax.swing.JTabbedPane();
+        pnlCatalogo = new javax.swing.JPanel();
+        pnlFiltros = new javax.swing.JPanel();
+        lblMarca = new javax.swing.JLabel();
+        cboMarca = new javax.swing.JComboBox<>();
+        lblMaterial = new javax.swing.JLabel();
+        cboMaterial = new javax.swing.JComboBox<>();
+        lblForma = new javax.swing.JLabel();
         cboForma = new javax.swing.JComboBox<>();
-        jLabel1 = new javax.swing.JLabel();
-        txtGenero = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        txtMedidas = new javax.swing.JTextField();
-        btnAceptar = new javax.swing.JButton();
+        lblPrecioMin = new javax.swing.JLabel();
+        txtPrecioMin = new javax.swing.JTextField();
+        lblPrecioMax = new javax.swing.JLabel();
+        txtPrecioMax = new javax.swing.JTextField();
+        btnFiltrar = new javax.swing.JButton();
+        btnLimpiar = new javax.swing.JButton();
+        scrAros = new javax.swing.JScrollPane();
+        tblAros = new javax.swing.JTable();
+        pnlApartar = new javax.swing.JPanel();
+        lblObservacion = new javax.swing.JLabel();
+        txtObservacion = new javax.swing.JTextField();
+        btnApartar = new javax.swing.JButton();
+        pnlApartados = new javax.swing.JPanel();
+        scrApartados = new javax.swing.JScrollPane();
+        tblApartados = new javax.swing.JTable();
+        pnlCancelar = new javax.swing.JPanel();
+        btnCancelarApartado = new javax.swing.JButton();
+        pnlPie = new javax.swing.JPanel();
+        btnSalir = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Catálogo de aros - Sistema Óptica");
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        pnlEncabezado.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 12, 4, 12));
+        pnlEncabezado.setLayout(new java.awt.BorderLayout(0, 4));
+        lblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        lblTitulo.setText("Catálogo de aros");
+        pnlEncabezado.add(lblTitulo, java.awt.BorderLayout.CENTER);
 
-        txtmaterial.addActionListener(this::txtmaterialActionPerformed);
+        lblIndicacion.setText("Filtre los aros, seleccione uno en la tabla y presione Apartar.");
+        pnlEncabezado.add(lblIndicacion, java.awt.BorderLayout.SOUTH);
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Forma");
+        getContentPane().add(pnlEncabezado, java.awt.BorderLayout.NORTH);
 
-        txtColor.addActionListener(this::txtColorActionPerformed);
+        pnlCatalogo.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        pnlCatalogo.setLayout(new java.awt.BorderLayout(0, 6));
+        pnlFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
+        pnlFiltros.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        lblMarca.setText("Marca:");
+        pnlFiltros.add(lblMarca);
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Color");
+        cboMarca.setPreferredSize(new java.awt.Dimension(140, 26));
+        pnlFiltros.add(cboMarca);
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("Material");
+        lblMaterial.setText("Material:");
+        pnlFiltros.add(lblMaterial);
 
-        jLabel1.setBackground(new java.awt.Color(0, 153, 153));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Registro de Clientes");
+        cboMaterial.setPreferredSize(new java.awt.Dimension(140, 26));
+        pnlFiltros.add(cboMaterial);
 
-        txtGenero.addActionListener(this::txtGeneroActionPerformed);
+        lblForma.setText("Forma:");
+        pnlFiltros.add(lblForma);
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Genero");
+        cboForma.setPreferredSize(new java.awt.Dimension(140, 26));
+        pnlFiltros.add(cboForma);
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Medidas");
+        lblPrecioMin.setText("Precio desde (L):");
+        pnlFiltros.add(lblPrecioMin);
 
-        txtMedidas.addActionListener(this::txtMedidasActionPerformed);
+        txtPrecioMin.setColumns(6);
+        pnlFiltros.add(txtPrecioMin);
 
-        btnAceptar.setText("Aceptar");
-        btnAceptar.addActionListener(this::btnAceptarActionPerformed);
+        lblPrecioMax.setText("hasta:");
+        pnlFiltros.add(lblPrecioMax);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(49, 49, 49)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtMedidas, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cboForma, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGap(49, 49, 49)
-                                        .addComponent(txtmaterial, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGap(41, 41, 41)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addGap(6, 6, 6)
-                                                .addComponent(txtGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(173, 173, 173)
-                .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtmaterial, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboForma, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtMedidas, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
-                .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
+        txtPrecioMax.setColumns(6);
+        pnlFiltros.add(txtPrecioMax);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        btnFiltrar.setText("Filtrar");
+        btnFiltrar.addActionListener(this::btnFiltrarActionPerformed);
+        pnlFiltros.add(btnFiltrar);
+
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
+        pnlFiltros.add(btnLimpiar);
+
+        pnlCatalogo.add(pnlFiltros, java.awt.BorderLayout.NORTH);
+
+        scrAros.setPreferredSize(new java.awt.Dimension(980, 260));
+        scrAros.setViewportView(tblAros);
+
+        pnlCatalogo.add(scrAros, java.awt.BorderLayout.CENTER);
+
+        pnlApartar.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        lblObservacion.setText("Observación (opcional):");
+        pnlApartar.add(lblObservacion);
+
+        txtObservacion.setColumns(28);
+        pnlApartar.add(txtObservacion);
+
+        btnApartar.setText("Apartar aro seleccionado");
+        btnApartar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnApartar.addActionListener(this::btnApartarActionPerformed);
+        pnlApartar.add(btnApartar);
+
+        pnlCatalogo.add(pnlApartar, java.awt.BorderLayout.SOUTH);
+
+        tabCatalogo.addTab("Catálogo", pnlCatalogo);
+
+        pnlApartados.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        pnlApartados.setLayout(new java.awt.BorderLayout(0, 6));
+        scrApartados.setPreferredSize(new java.awt.Dimension(980, 260));
+        scrApartados.setViewportView(tblApartados);
+
+        pnlApartados.add(scrApartados, java.awt.BorderLayout.CENTER);
+
+        pnlCancelar.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        btnCancelarApartado.setText("Cancelar apartado");
+        btnCancelarApartado.addActionListener(this::btnCancelarApartadoActionPerformed);
+        pnlCancelar.add(btnCancelarApartado);
+
+        pnlApartados.add(pnlCancelar, java.awt.BorderLayout.SOUTH);
+
+        tabCatalogo.addTab("Mis apartados", pnlApartados);
+
+        getContentPane().add(tabCatalogo, java.awt.BorderLayout.CENTER);
+
+        pnlPie.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 8, 8, 8));
+        pnlPie.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        btnSalir.setText("Salir");
+        btnSalir.addActionListener(this::btnSalirActionPerformed);
+        pnlPie.add(btnSalir);
+
+        getContentPane().add(pnlPie, java.awt.BorderLayout.SOUTH);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtColorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtColorActionPerformed
+    private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
+        UtilVista.ejecutar(this, this::filtrar);
+    }//GEN-LAST:event_btnFiltrarActionPerformed
 
-    private void txtGeneroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGeneroActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtGeneroActionPerformed
-
-    private void txtMedidasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMedidasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtMedidasActionPerformed
-
-    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        // TODO add your handling code here:
-        
- if (txtmaterial.getText().trim().isEmpty() || txtColor.getText().trim().isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Por favor complete los campos obligatorios.", "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    Aro nuevoAro = new Aro();
-    
-    nuevoAro.setCodigo("ARO-" + System.currentTimeMillis()); // Código único temporal o generado
-    nuevoAro.setNombre("Aro " + cboForma.getSelectedItem() + " " + txtmaterial.getText());
-    nuevoAro.setMarca("Genérica"); // Puedes cambiarlo si tienes un campo para marca
-    nuevoAro.setPrecio(new java.math.BigDecimal("0.00")); // Asigna el precio correspondiente
-    nuevoAro.setStock(10); // Stock inicial por defecto
-    nuevoAro.setStockMinimo(2);
-    nuevoAro.setActivo(true);
-
-    nuevoAro.setMaterial(txtmaterial.getText().trim());
-    nuevoAro.setColor(txtColor.getText().trim());
-    nuevoAro.setGenero(txtGenero.getText().trim());
-    nuevoAro.setMedidas(txtMedidas.getText().trim());
-    nuevoAro.setForma((String) cboForma.getSelectedItem());
-    nuevoAro.setImagenUrl(null);
-
-    boolean resultado = dao.insertar(nuevoAro);
-
-    if (resultado) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Aro guardado exitosamente en la base de datos.");
-        txtmaterial.setText("");
-        txtColor.setText("");
-        txtGenero.setText("");
-        txtMedidas.setText("");
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        cboMarca.setSelectedIndex(0);
+        cboMaterial.setSelectedIndex(0);
         cboForma.setSelectedIndex(0);
-    } else {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error al guardar el aro.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-    }
-        
-    }//GEN-LAST:event_btnAceptarActionPerformed
+        txtPrecioMin.setText("");
+        txtPrecioMax.setText("");
+        UtilVista.ejecutar(this, this::filtrar);
+    }//GEN-LAST:event_btnLimpiarActionPerformed
 
-    private void txtmaterialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtmaterialActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtmaterialActionPerformed
+    private void btnApartarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApartarActionPerformed
+        UtilVista.ejecutar(this, () -> {
+            int fila = tblAros.getSelectedRow();
+            Aro aro = fila < 0 || fila >= aros.size() ? null : aros.get(fila);
+            servicio.apartar(usuario, aro, UtilVista.opcional(txtObservacion.getText()));
+            UtilVista.info(this, "Aro apartado: " + aro.getNombre() + "\nPuede verlo en la pestaña Mis apartados.");
+            txtObservacion.setText("");
+            cargarApartados();
+        });
+    }//GEN-LAST:event_btnApartarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+    private void btnCancelarApartadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarApartadoActionPerformed
+        int fila = tblApartados.getSelectedRow();
+        Apartado a = fila < 0 || fila >= apartados.size() ? null : apartados.get(fila);
+        if (a != null && a.isActivo() && !UtilVista.confirmar(this, "¿Cancelar el apartado de " + a.getAro().getNombre() + "?")) {
+            return;
         }
-        //</editor-fold>
+        UtilVista.ejecutar(this, () -> {
+            servicio.cancelar(usuario, a);
+            cargarApartados();
+        });
+    }//GEN-LAST:event_btnCancelarApartadoActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Elecciondearos().setVisible(true));
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void cargarOpciones() {
+        CatalogoService.Opciones o = servicio.opcionesFiltro();
+        llenarCombo(cboMarca, o.marcas);
+        llenarCombo(cboMaterial, o.materiales);
+        llenarCombo(cboForma, o.formas);
+    }
+
+    private void llenarCombo(JComboBox<String> combo, List<String> valores) {
+        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
+        modelo.addElement(TODOS);
+        for (String v : valores) {
+            modelo.addElement(v);
+        }
+        combo.setModel(modelo);
+    }
+
+    private String filtro(JComboBox<String> combo) {
+        Object valor = combo.getSelectedItem();
+        return valor == null || TODOS.equals(valor) ? null : valor.toString();
+    }
+
+    private void filtrar() throws ValidacionException {
+        BigDecimal min = UtilVista.decimal(txtPrecioMin.getText(), "Precio desde", false);
+        BigDecimal max = UtilVista.decimal(txtPrecioMax.getText(), "Precio hasta", false);
+        aros = servicio.buscarAros(filtro(cboMarca), filtro(cboMaterial), filtro(cboForma), min, max);
+        modeloAros.setRowCount(0);
+        for (Aro a : aros) {
+            modeloAros.addRow(new Object[]{a.getCodigo(), a.getNombre(), UtilVista.texto(a.getMarca()),
+                UtilVista.texto(a.getMaterial()), UtilVista.texto(a.getForma()), UtilVista.texto(a.getColor()),
+                UtilVista.texto(a.getGenero()), UtilVista.texto(a.getMedidas()),
+                UtilVista.dinero(a.getPrecio()), a.getStock()});
+        }
+        lblIndicacion.setText(aros.size() + " aro(s) encontrados. Seleccione uno en la tabla y presione Apartar.");
+    }
+
+    private void cargarApartados() throws ValidacionException {
+        apartados = servicio.listarApartados(usuario);
+        modeloApartados.setRowCount(0);
+        for (Apartado a : apartados) {
+            Aro aro = a.getAro();
+            modeloApartados.addRow(new Object[]{a.getIdApartado(),
+                a.getFecha() == null ? "" : a.getFecha().format(FECHA),
+                aro.getCodigo(), aro.getNombre(), UtilVista.texto(aro.getMarca()),
+                UtilVista.dinero(aro.getPrecio()), a.getEstado(), UtilVista.texto(a.getObservaciones())});
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAceptar;
+    private javax.swing.JButton btnApartar;
+    private javax.swing.JButton btnCancelarApartado;
+    private javax.swing.JButton btnFiltrar;
+    private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox<String> cboForma;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField txtColor;
-    private javax.swing.JTextField txtGenero;
-    private javax.swing.JTextField txtMedidas;
-    private javax.swing.JTextField txtmaterial;
+    private javax.swing.JComboBox<String> cboMarca;
+    private javax.swing.JComboBox<String> cboMaterial;
+    private javax.swing.JLabel lblForma;
+    private javax.swing.JLabel lblIndicacion;
+    private javax.swing.JLabel lblMarca;
+    private javax.swing.JLabel lblMaterial;
+    private javax.swing.JLabel lblObservacion;
+    private javax.swing.JLabel lblPrecioMax;
+    private javax.swing.JLabel lblPrecioMin;
+    private javax.swing.JLabel lblTitulo;
+    private javax.swing.JPanel pnlApartados;
+    private javax.swing.JPanel pnlApartar;
+    private javax.swing.JPanel pnlCancelar;
+    private javax.swing.JPanel pnlCatalogo;
+    private javax.swing.JPanel pnlEncabezado;
+    private javax.swing.JPanel pnlFiltros;
+    private javax.swing.JPanel pnlPie;
+    private javax.swing.JScrollPane scrApartados;
+    private javax.swing.JScrollPane scrAros;
+    private javax.swing.JTabbedPane tabCatalogo;
+    private javax.swing.JTable tblApartados;
+    private javax.swing.JTable tblAros;
+    private javax.swing.JTextField txtObservacion;
+    private javax.swing.JTextField txtPrecioMax;
+    private javax.swing.JTextField txtPrecioMin;
     // End of variables declaration//GEN-END:variables
 }

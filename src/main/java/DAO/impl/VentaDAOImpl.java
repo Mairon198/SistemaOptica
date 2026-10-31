@@ -39,6 +39,8 @@ public class VentaDAOImpl implements VentaDAO {
                 + "WHERE id_producto = ? AND activo = 1 AND stock >= ?";
         String sqlDetalle = "INSERT INTO detalle_venta(id_venta, id_producto, cantidad, precio_unitario) "
                 + "VALUES (?,?,?,?)";
+        String sqlApartado = "UPDATE apartado SET estado = 'VENDIDO' "
+                + "WHERE id_cliente = ? AND id_producto = ? AND estado = 'APARTADO'";
         ultimoError = null;
         Connection con = null;
         try {
@@ -94,6 +96,17 @@ public class VentaDAOImpl implements VentaDAO {
                     psDetalle.setBigDecimal(4, d.getPrecioUnitario());
                     psDetalle.executeUpdate();
                     d.setIdVenta(idVenta);
+                }
+            }
+
+            //Si el cliente tenia apartado el aro vendido, queda como VENDIDO
+            try (PreparedStatement psApartado = con.prepareStatement(sqlApartado)) {
+                for (DetalleVenta d : venta.getDetalles()) {
+                    if (Producto.TIPO_ARO.equals(d.getProducto().getTipo())) {
+                        psApartado.setInt(1, venta.getCliente().getIdCliente());
+                        psApartado.setInt(2, d.getProducto().getIdProducto());
+                        psApartado.executeUpdate();
+                    }
                 }
             }
 

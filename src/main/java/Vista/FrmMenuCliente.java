@@ -24,7 +24,7 @@ public class FrmMenuCliente extends javax.swing.JFrame {
         this.usuario = usuario;
         initComponents();
         lblBienvenida.setText("Bienvenido, " + usuario.getNombreMostrar());
-        setSize(560, 260);
+        setSize(560, 330);
         setLocationRelativeTo(null);
     }
 
@@ -42,6 +42,7 @@ public class FrmMenuCliente extends javax.swing.JFrame {
         lblRol = new javax.swing.JLabel();
         pnlOpciones = new javax.swing.JPanel();
         btnHistorialMediciones = new javax.swing.JButton();
+        btnCatalogo = new javax.swing.JButton();
         pnlPie = new javax.swing.JPanel();
         btnCerrarSesion = new javax.swing.JButton();
 
@@ -68,6 +69,11 @@ public class FrmMenuCliente extends javax.swing.JFrame {
         btnHistorialMediciones.addActionListener(this::btnHistorialMedicionesActionPerformed);
         pnlOpciones.add(btnHistorialMediciones);
 
+        btnCatalogo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnCatalogo.setText("Catálogo de aros");
+        btnCatalogo.addActionListener(this::btnCatalogoActionPerformed);
+        pnlOpciones.add(btnCatalogo);
+
         getContentPane().add(pnlOpciones, java.awt.BorderLayout.CENTER);
 
         pnlPie.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 16, 12, 16));
@@ -92,6 +98,10 @@ public class FrmMenuCliente extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_btnHistorialMedicionesActionPerformed
 
+    private void btnCatalogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCatalogoActionPerformed
+        new Elecciondearos(usuario).setVisible(true);
+    }//GEN-LAST:event_btnCatalogoActionPerformed
+
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
         if (!UtilVista.confirmar(this, "¿Desea cerrar la sesión?")) {
             return;
@@ -107,6 +117,7 @@ public class FrmMenuCliente extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCatalogo;
     private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnHistorialMediciones;
     private javax.swing.JLabel lblBienvenida;
