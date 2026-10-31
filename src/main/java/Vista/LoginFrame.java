@@ -87,7 +87,7 @@ public class LoginFrame extends JFrame {
 
         btnIngresar.addActionListener(e -> intentarLogin());
         btnCrearCuenta.addActionListener(e -> {
-            Vista.RegistroClientes registro = new Vista.RegistroClientes();
+            RegistroClientes registro = new RegistroClientes();
             registro.setLocationRelativeTo(this);
             registro.setVisible(true);
         });

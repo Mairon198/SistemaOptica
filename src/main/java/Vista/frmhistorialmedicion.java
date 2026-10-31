@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package Vista;
+package vista;
 
 import dao.ClienteDAO;
 import dao.MedicionDAO;
@@ -50,7 +50,7 @@ public class frmhistorialmedicion extends javax.swing.JFrame {
             TxtNombreCliente.setText(cliente.getNombres() + " " + cliente.getApellidos());
 
             MedicionDAO medicionDAO = new MedicionDAOImpl();
-            List<Medicion> listaMediciones = medicionDAO.obtenerPorCliente(cliente.getIdCliente());
+            List<Medicion> listaMediciones = medicionDAO.listarPorCliente(cliente.getIdCliente());
 
             DefaultTableModel modeloTabla = (DefaultTableModel) TblHistorial.getModel();
             modeloTabla.setRowCount(0);
@@ -58,15 +58,11 @@ public class frmhistorialmedicion extends javax.swing.JFrame {
             // Llena la tabla respetando el orden de las columnas de tu diseño
             for (Medicion m : listaMediciones) {
                 modeloTabla.addRow(new Object[]{
-                    m.getIdMedicion(),      // ID_Receta
-                    m.getOdEsfera(),        // Ojo_Derecho
-                    m.getOdEje(),           // Eje:Derecho
-                    m.getOdCilindro(),      // Esfera_Derecha
-                    m.getOiEsfera(),        // Ojo_Izquierdo
-                    m.getOiEje(),           // Eje_Izquierdo
-                    m.getOiCilindro(),      // Cilindro_Izquierdo
-                    m.getAdicion(),         // Adicion
-                    m.getObservaciones()    // Optometrista / Observaciones
+                    m.getIdMedicion(),
+                    m.getOdEsfera(), m.getOdCilindro(), m.getOdEje(),
+                    m.getOiEsfera(), m.getOiCilindro(), m.getOiEje(),
+                    m.getAdicion(),
+                    m.getObservaciones()
                 });
             }
         } else {
@@ -111,21 +107,18 @@ public class frmhistorialmedicion extends javax.swing.JFrame {
 
         TblHistorial.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "ID_Receta", "Ojo_Derecho", "Eje:Derecho", "Esfera_Derecha", "Ojo_Izquierdo", "Eje_Izquierdo", "Cilindro_Izquierdo", "Adicion", "Optometrista"
+                "N.º", "OD Esfera", "OD Cilindro", "OD Eje", "OI Esfera", "OI Cilindro", "OI Eje", "Adición", "Observaciones"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
             };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         jScrollPane1.setViewportView(TblHistorial);

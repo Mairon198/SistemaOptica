@@ -1,4 +1,4 @@
-package Vista;
+package vista;
 
 import dao.AroDAO;
 import dao.impl.AroDAOImpl;

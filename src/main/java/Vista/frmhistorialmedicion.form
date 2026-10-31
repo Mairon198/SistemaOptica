@@ -136,16 +136,16 @@
             <Component class="javax.swing.JTable" name="TblHistorial">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="9" rowCount="4">
-                    <Column editable="true" title="ID_Receta" type="java.lang.Object"/>
-                    <Column editable="true" title="Ojo_Derecho" type="java.lang.String"/>
-                    <Column editable="true" title="Eje:Derecho" type="java.lang.String"/>
-                    <Column editable="true" title="Esfera_Derecha" type="java.lang.String"/>
-                    <Column editable="true" title="Ojo_Izquierdo" type="java.lang.String"/>
-                    <Column editable="true" title="Eje_Izquierdo" type="java.lang.String"/>
-                    <Column editable="true" title="Cilindro_Izquierdo" type="java.lang.String"/>
-                    <Column editable="true" title="Adicion" type="java.lang.String"/>
-                    <Column editable="true" title="Optometrista" type="java.lang.String"/>
+                  <Table columnCount="9" rowCount="0">
+                    <Column editable="false" title="N.º" type="java.lang.Object"/>
+                    <Column editable="false" title="OD Esfera" type="java.lang.Object"/>
+                    <Column editable="false" title="OD Cilindro" type="java.lang.Object"/>
+                    <Column editable="false" title="OD Eje" type="java.lang.Object"/>
+                    <Column editable="false" title="OI Esfera" type="java.lang.Object"/>
+                    <Column editable="false" title="OI Cilindro" type="java.lang.Object"/>
+                    <Column editable="false" title="OI Eje" type="java.lang.Object"/>
+                    <Column editable="false" title="Adición" type="java.lang.Object"/>
+                    <Column editable="false" title="Observaciones" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">

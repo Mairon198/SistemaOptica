@@ -88,7 +88,7 @@ public class FrmMenuCliente extends javax.swing.JFrame {
             if (c == null || c.getDni() == null) {
                 throw new ValidacionException("Su cuenta no está asociada a un cliente con DNI registrado.");
             }
-            new Vista.frmhistorialmedicion(c.getDni()).setVisible(true);
+            new frmhistorialmedicion(c.getDni()).setVisible(true);
         });
     }//GEN-LAST:event_btnHistorialMedicionesActionPerformed
 

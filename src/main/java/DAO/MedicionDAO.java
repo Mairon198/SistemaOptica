@@ -1,7 +1,6 @@
 package dao;
 
 import java.util.ArrayList;
-import java.util.List;
 import modelo.Medicion;
 
 public interface MedicionDAO {
@@ -12,7 +11,6 @@ public interface MedicionDAO {
     
     ArrayList<Medicion> listarPorCliente(int idCliente);
     
-    List<Medicion> obtenerPorCliente(int idCliente);
 
     boolean insertar(Medicion medicion);
 
