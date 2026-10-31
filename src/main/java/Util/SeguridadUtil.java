@@ -9,10 +9,7 @@ import java.util.Base64;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-/**
- * Hash de contraseñas con PBKDF2-HMAC-SHA256 (incluido en el JDK, sin librerías externas).
- * Formato guardado: iteraciones:salt(Base64):hash(Base64)
- */
+
 public final class SeguridadUtil {
 
     private static final String ALGORITMO = "PBKDF2WithHmacSHA256";

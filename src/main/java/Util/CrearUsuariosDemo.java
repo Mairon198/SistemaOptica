@@ -10,10 +10,7 @@ import java.sql.Statement;
 import modelo.Rol;
 import modelo.Usuario;
 
-/**
- * Crea usuarios de prueba (si no existen) ligados al cliente y al vendedor del script SQL.
- * Ejecutar una vez después de database.sql. CAMBIE estas contraseñas en producción.
- */
+
 public class CrearUsuariosDemo {
 
     public static void main(String[] args) throws SQLException {
