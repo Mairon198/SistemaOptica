@@ -20,7 +20,7 @@ import modelo.Producto;
  */
 public class InventarioService {
 
-    /** Un aro tiene stock bajo cuando le quedan MENOS de estas unidades. */
+    /** Un aro tiene stock bajo cuando le quedan menos de estas unidades. */
     public static final int LIMITE_STOCK_BAJO = 5;
 
     private final AroDAO aroDAO;
@@ -37,7 +37,6 @@ public class InventarioService {
         this.accesorioDAO = accesorioDAO;
     }
 
-    // ===================== AROS =====================
 
     public List<Aro> listarAros() {
         return aroDAO.listar();
@@ -76,7 +75,6 @@ public class InventarioService {
         return p.getStock() < LIMITE_STOCK_BAJO;
     }
 
-    // ===================== LUNAS =====================
 
     public List<Luna> listarLunas() {
         return lunaDAO.listar();
@@ -105,7 +103,6 @@ public class InventarioService {
         }
     }
 
-    // ===================== ACCESORIOS =====================
 
     public List<Accesorio> listarAccesorios() {
         return accesorioDAO.listar();
@@ -130,7 +127,6 @@ public class InventarioService {
         }
     }
 
-    // ===================== PARA VENTAS =====================
 
     /** Productos activos con stock disponible del tipo indicado (ARO, LUNA o ACCESORIO). */
     public List<Producto> listarDisponibles(String tipo) {
@@ -158,7 +154,6 @@ public class InventarioService {
         return aroDAO.buscarPorId(idProducto);
     }
 
-    // ===================== VALIDACIONES =====================
 
     private void validarProducto(Producto p) throws ValidacionException {
         if (vacio(p.getCodigo())) {

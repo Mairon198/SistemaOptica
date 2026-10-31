@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import modelo.Rol;
 import modelo.Usuario;
 
-/** Interfaz del rol CLIENTE. Aquí se irán agregando los módulos del cliente. */
+/** Interfaz del rol CLIENTE. */
 public class ClienteFrame extends JFrame {
 
     public ClienteFrame(Usuario usuario) {

@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import modelo.Rol;
 import modelo.Usuario;
 
-/** Interfaz del rol VENDEDOR. Aquí se irán agregando los módulos del vendedor. */
+
 public class VendedorFrame extends JFrame {
 
     public VendedorFrame(Usuario usuario) {

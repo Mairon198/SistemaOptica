@@ -14,12 +14,6 @@ import modelo.Producto;
 import modelo.Vendedor;
 import modelo.Venta;
 
-/**
- * Implementación JDBC de VentaDAO.
- *
- * registrar() guarda la venta, sus detalles y descuenta el stock de cada
- * producto dentro de UNA sola transacción: o se guarda todo o no se guarda nada.
- */
 public class VentaDAOImpl implements VentaDAO {
 
     private static final String SELECT_VENTAS =
@@ -92,7 +86,6 @@ public class VentaDAOImpl implements VentaDAO {
                     psStock.setInt(2, p.getIdProducto());
                     psStock.setInt(3, d.getCantidad());
                     if (psStock.executeUpdate() == 0) {
-                        // Nadie actualizado: no hay stock suficiente (otro vendedor lo vendió antes)
                         throw new SQLException("Stock insuficiente para " + p.getCodigo() + " - " + p.getNombre());
                     }
 

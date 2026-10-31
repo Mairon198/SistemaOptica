@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import modelo.Cliente;
 import modelo.Medicion;
 
-/**
- * Implementación JDBC de MedicionDAO.
- */
+
 public class MedicionDAOImpl implements MedicionDAO {
 
     private static final String SELECT_MEDICIONES =

@@ -47,7 +47,6 @@ public class VentaService {
         this.inventarioService = inventarioService;
     }
 
-    // ===================== CONSULTAS =====================
 
     public List<Cliente> listarClientes() {
         return clienteDAO.listar();
@@ -69,7 +68,6 @@ public class VentaService {
         return ventaDAO.buscarPorId(idVenta);
     }
 
-    // ===================== ARMAR LA VENTA =====================
 
     /** Crea una venta vacía a nombre del vendedor que inició sesión. */
     public Venta nuevaVenta(Usuario vendedorEnSesion) {
@@ -135,7 +133,6 @@ public class VentaService {
         venta.setTotal(subtotal.add(impuesto));
     }
 
-    // ===================== REGISTRAR =====================
 
     /**
      * Valida y guarda la venta. Al guardarse, el stock de cada producto vendido

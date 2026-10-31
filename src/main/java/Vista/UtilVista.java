@@ -10,22 +10,18 @@ import javax.swing.ListCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import servicio.ValidacionException;
 
-/** Métodos de apoyo compartidos por los formularios del vendedor. */
+
 final class UtilVista {
 
     private UtilVista() {
     }
 
-    /** Acción de un botón que puede fallar por una regla de negocio. */
+
     interface Accion {
         void ejecutar() throws ValidacionException;
     }
 
-    /**
-     * Ejecuta la acción y muestra el error en pantalla si falla:
-     * - ValidacionException: mensaje de negocio (advertencia)
-     * - cualquier otro error: problema técnico (por ejemplo, sin conexión)
-     */
+
     static void ejecutar(Component padre, Accion accion) {
         try {
             accion.ejecutar();
@@ -59,7 +55,7 @@ final class UtilVista {
         };
     }
 
-    /** Muestra cada elemento de un JComboBox con el texto que devuelve la función. */
+ 
     static <T> ListCellRenderer<Object> renderer(Function<T, String> texto) {
         return new DefaultListCellRenderer() {
             @Override

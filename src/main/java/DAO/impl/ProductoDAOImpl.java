@@ -3,12 +3,7 @@ package dao.impl;
 import java.sql.*;
 import modelo.Producto;
 
-/**
- * Metodos de la tabla "producto" que comparten AroDAOImpl, LunaDAOImpl,
- * AccesorioDAOImpl y VentaDAOImpl (no tiene interfaz porque solo es de apoyo)
- *
- * @author Mairon
- */
+
 public class ProductoDAOImpl {
 
     // Inserta en la tabla producto y devuelve el id generado

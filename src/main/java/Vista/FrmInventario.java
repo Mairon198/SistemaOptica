@@ -15,10 +15,7 @@ import modelo.Producto;
 import servicio.InventarioService;
 import servicio.ValidacionException;
 
-/**
- * Gestión de stock: CRUD de aros, lunas y accesorios, con alerta de aros con menos de 5 unidades.
- * Formulario creado como JFrame Form: ábralo en NetBeans con la pestaña "Design".
- */
+
 public class FrmInventario extends javax.swing.JFrame {
 
     private final InventarioService servicio = new InventarioService();
@@ -192,6 +189,7 @@ public class FrmInventario extends javax.swing.JFrame {
 
         pnlEncabezado.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 12, 4, 12));
         pnlEncabezado.setLayout(new java.awt.BorderLayout(0, 4));
+
         lblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         lblTitulo.setText("Gestión de Inventario");
         pnlEncabezado.add(lblTitulo, java.awt.BorderLayout.CENTER);
@@ -204,7 +202,9 @@ public class FrmInventario extends javax.swing.JFrame {
 
         pnlAro.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         pnlAro.setLayout(new java.awt.BorderLayout(0, 6));
+
         pnlBuscarAro.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
         lblBuscarAro.setText("Buscar (código, nombre o marca):");
         pnlBuscarAro.add(lblBuscarAro);
 
@@ -232,8 +232,10 @@ public class FrmInventario extends javax.swing.JFrame {
         pnlAro.add(scrAro, java.awt.BorderLayout.CENTER);
 
         pnlSurAro.setLayout(new java.awt.BorderLayout(0, 4));
+
         pnlDatosAro.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del aro"));
         pnlDatosAro.setLayout(new java.awt.GridLayout(0, 4, 8, 6));
+
         lblCodigoAro.setText("Código:");
         lblCodigoAro.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         pnlDatosAro.add(lblCodigoAro);
@@ -321,6 +323,7 @@ public class FrmInventario extends javax.swing.JFrame {
         pnlSurAro.add(pnlDatosAro, java.awt.BorderLayout.CENTER);
 
         pnlBotonesAro.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
         btnNuevoAro.setText("Nuevo");
         btnNuevoAro.addActionListener(this::btnNuevoAroActionPerformed);
         pnlBotonesAro.add(btnNuevoAro);
@@ -341,7 +344,9 @@ public class FrmInventario extends javax.swing.JFrame {
 
         pnlLuna.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         pnlLuna.setLayout(new java.awt.BorderLayout(0, 6));
+
         pnlBuscarLuna.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
         lblBuscarLuna.setText("Buscar (código, nombre o marca):");
         pnlBuscarLuna.add(lblBuscarLuna);
 
@@ -365,8 +370,10 @@ public class FrmInventario extends javax.swing.JFrame {
         pnlLuna.add(scrLuna, java.awt.BorderLayout.CENTER);
 
         pnlSurLuna.setLayout(new java.awt.BorderLayout(0, 4));
+
         pnlDatosLuna.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos de la luna"));
         pnlDatosLuna.setLayout(new java.awt.GridLayout(0, 4, 8, 6));
+
         lblCodigoLuna.setText("Código:");
         lblCodigoLuna.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         pnlDatosLuna.add(lblCodigoLuna);
@@ -440,6 +447,7 @@ public class FrmInventario extends javax.swing.JFrame {
         pnlSurLuna.add(pnlDatosLuna, java.awt.BorderLayout.CENTER);
 
         pnlBotonesLuna.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
         btnNuevoLuna.setText("Nuevo");
         btnNuevoLuna.addActionListener(this::btnNuevoLunaActionPerformed);
         pnlBotonesLuna.add(btnNuevoLuna);
@@ -460,7 +468,9 @@ public class FrmInventario extends javax.swing.JFrame {
 
         pnlAccesorio.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         pnlAccesorio.setLayout(new java.awt.BorderLayout(0, 6));
+
         pnlBuscarAccesorio.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
         lblBuscarAccesorio.setText("Buscar (código, nombre o marca):");
         pnlBuscarAccesorio.add(lblBuscarAccesorio);
 
@@ -484,8 +494,10 @@ public class FrmInventario extends javax.swing.JFrame {
         pnlAccesorio.add(scrAccesorio, java.awt.BorderLayout.CENTER);
 
         pnlSurAccesorio.setLayout(new java.awt.BorderLayout(0, 4));
+
         pnlDatosAccesorio.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del accesorio"));
         pnlDatosAccesorio.setLayout(new java.awt.GridLayout(0, 4, 8, 6));
+
         lblCodigoAccesorio.setText("Código:");
         lblCodigoAccesorio.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         pnlDatosAccesorio.add(lblCodigoAccesorio);
@@ -545,6 +557,7 @@ public class FrmInventario extends javax.swing.JFrame {
         pnlSurAccesorio.add(pnlDatosAccesorio, java.awt.BorderLayout.CENTER);
 
         pnlBotonesAccesorio.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
         btnNuevoAccesorio.setText("Nuevo");
         btnNuevoAccesorio.addActionListener(this::btnNuevoAccesorioActionPerformed);
         pnlBotonesAccesorio.add(btnNuevoAccesorio);
@@ -567,6 +580,7 @@ public class FrmInventario extends javax.swing.JFrame {
 
         pnlPie.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 8, 8, 8));
         pnlPie.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
         btnCerrar.setText("Cerrar");
         btnCerrar.addActionListener(this::btnCerrarActionPerformed);
         pnlPie.add(btnCerrar);
@@ -713,7 +727,6 @@ public class FrmInventario extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btnCerrarActionPerformed
 
-    // ===================== TABLAS =====================
 
     private void configurarTabla(JTable tabla, DefaultTableModel modelo, boolean resaltarStockBajo) {
         tabla.setModel(modelo);
@@ -721,7 +734,6 @@ public class FrmInventario extends javax.swing.JFrame {
         tabla.setAutoCreateRowSorter(false);
         tabla.getColumnModel().getColumn(0).setMaxWidth(50);
         if (resaltarStockBajo) {
-            // Pinta de rojo las filas de aros con menos de 5 unidades
             tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
                 @Override
                 public Component getTableCellRendererComponent(JTable t, Object valor, boolean seleccionado,
@@ -774,15 +786,13 @@ public class FrmInventario extends javax.swing.JFrame {
             lblAlertaStock.setText(" ");
             return;
         }
-        StringBuilder sb = new StringBuilder("⚠ Stock bajo (menos de " + InventarioService.LIMITE_STOCK_BAJO + "): ");
+        StringBuilder sb = new StringBuilder("Stock bajo (menos de " + InventarioService.LIMITE_STOCK_BAJO + "): ");
         for (int i = 0; i < bajos.size(); i++) {
             Aro a = bajos.get(i);
             sb.append(i == 0 ? "" : ", ").append(a.getCodigo()).append(" (").append(a.getStock()).append(")");
         }
         lblAlertaStock.setText(sb.toString());
     }
-
-    // ===================== CAMPOS COMUNES =====================
 
     private void leerComunes(Producto p, int id, JTextField codigo, JTextField nombre, JTextField marca,
                              JTextField precio, JTextField stock, JTextField stockMin) throws ValidacionException {
@@ -812,7 +822,6 @@ public class FrmInventario extends javax.swing.JFrame {
         }
     }
 
-    // ===================== AROS =====================
 
     private Aro construirAro() throws ValidacionException {
         Aro a = new Aro();
@@ -851,7 +860,6 @@ public class FrmInventario extends javax.swing.JFrame {
         txtCodigoAro.requestFocusInWindow();
     }
 
-    // ===================== LUNAS =====================
 
     private Luna construirLuna() throws ValidacionException {
         Luna l = new Luna();
@@ -886,7 +894,6 @@ public class FrmInventario extends javax.swing.JFrame {
         txtCodigoLuna.requestFocusInWindow();
     }
 
-    // ===================== ACCESORIOS =====================
 
     private Accesorio construirAccesorio() throws ValidacionException {
         Accesorio a = new Accesorio();

@@ -15,11 +15,10 @@ public class RegistroClientes extends javax.swing.JFrame {
     /**
      * Creates new form RegistroClientes
      */
-// Este es el CONSTRUCTOR de la clase
+
     public RegistroClientes() {
-        initComponents(); // Inicializa los componentes visuales generados por NetBeans
+        initComponents(); 
         
-        // Aquí puedes poner código que quieras que se ejecute al abrir la ventana
 
     }
 

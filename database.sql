@@ -1,22 +1,7 @@
--- =====================================================================
---  Sistema Óptica - Base de datos OpticaDB (SQL Server / Azure SQL)
---
---  Ejecutar con la base OpticaDB seleccionada.
---  Se puede ejecutar varias veces: solo crea lo que todavía no existe.
---
---  Los nombres de columnas siguen EXACTAMENTE lo que usa el código Java:
---   * cliente, vendedor, usuario  -> camelCase (idCliente, passwordHash...)
---     (UsuarioDAOImpl, CrearUsuariosDemo)
---   * producto, aro, luna, accesorio -> snake_case (id_producto, stock_minimo...)
---     (ProductoDAOImpl, AroDAOImpl, LunaDAOImpl, AccesorioDAOImpl)
---   * medicion, venta, detalle_venta -> todavía no tienen DAO; se usa
---     snake_case igual que producto.
--- =====================================================================
+-- Base de datos OpticaDB
 
 
--- ---------------------------------------------------------------------
 -- 1. PERSONAS Y ACCESO
--- ---------------------------------------------------------------------
 
 IF OBJECT_ID('dbo.cliente', 'U') IS NULL
 CREATE TABLE dbo.cliente (
@@ -61,9 +46,7 @@ CREATE TABLE dbo.usuario (
 GO
 
 
--- ---------------------------------------------------------------------
 -- 2. INVENTARIO (producto + un detalle por tipo)
--- ---------------------------------------------------------------------
 
 IF OBJECT_ID('dbo.producto', 'U') IS NULL
 CREATE TABLE dbo.producto (
@@ -113,9 +96,7 @@ CREATE TABLE dbo.accesorio (
 GO
 
 
--- ---------------------------------------------------------------------
 -- 3. MEDICIONES Y VENTAS
--- ---------------------------------------------------------------------
 
 -- Receta / medición de la vista (OD = ojo derecho, OI = ojo izquierdo)
 IF OBJECT_ID('dbo.medicion', 'U') IS NULL
@@ -162,9 +143,7 @@ CREATE TABLE dbo.detalle_venta (
 GO
 
 
--- ---------------------------------------------------------------------
 -- 4. DATOS DE EJEMPLO (solo si las tablas están vacías)
--- ---------------------------------------------------------------------
 
 IF NOT EXISTS (SELECT 1 FROM dbo.vendedor)
     INSERT INTO dbo.vendedor (nombres, apellidos, usuario, telefono)
@@ -217,7 +196,3 @@ BEGIN
 END
 GO
 
--- Las cuentas de usuario NO se insertan aquí (la contraseña se cifra en Java).
--- Después de ejecutar este script, ejecute Util/CrearUsuariosDemo.java (Run File):
---   mairon / Vendedor123  (VENDEDOR)
---   juan   / Cliente123   (CLIENTE)

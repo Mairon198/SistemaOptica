@@ -5,9 +5,6 @@ import javax.swing.JOptionPane;
 import modelo.Usuario;
 import util.Sesion;
 
-/**
- * Control de roles: abre automáticamente la interfaz que corresponde al rol del usuario.
- */
 public final class Navegador {
 
     private Navegador() {

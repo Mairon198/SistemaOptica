@@ -10,10 +10,7 @@ import modelo.Producto;
 import modelo.Venta;
 import servicio.VentaService;
 
-/**
- * Historial de ventas registradas con el detalle de productos de cada una.
- * Formulario creado como JFrame Form: ábralo en NetBeans con la pestaña "Design".
- */
+
 public class FrmHistorialVentas extends javax.swing.JFrame {
 
     private static final DateTimeFormatter FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -132,7 +129,7 @@ public class FrmHistorialVentas extends javax.swing.JFrame {
                 UtilVista.dinero(v.getSubtotal()), UtilVista.dinero(v.getImpuesto()), UtilVista.dinero(v.getTotal())});
             totalVendido = totalVendido.add(v.getTotal());
         }
-        lblResumen.setText(ventas.size() + " venta(s)  ·  Total vendido: " + UtilVista.dinero(totalVendido));
+        lblResumen.setText(ventas.size() + " venta(s) - Total vendido: " + UtilVista.dinero(totalVendido));
     }
 
     private void cargarDetalle() {

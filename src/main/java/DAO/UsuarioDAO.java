@@ -5,7 +5,6 @@ import modelo.Usuario;
 
 public interface UsuarioDAO {
 
-    /** Busca por nombre de usuario o por correo (sin distinguir mayúsculas). */
     Usuario buscarPorLogin(String usuarioOCorreo);
 
     boolean existe(String usuario, String email);

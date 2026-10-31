@@ -6,9 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import modelo.Cliente;
 
-/**
- * Implementación JDBC de ClienteDAO.
- */
+
 public class ClienteDAOImpl implements ClienteDAO {
 
     private static final String SELECT_CLIENTES =

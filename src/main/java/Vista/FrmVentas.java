@@ -17,11 +17,7 @@ import servicio.ValidacionException;
 import servicio.VentaService;
 import util.Sesion;
 
-/**
- * Módulo de ventas: cliente + medición + aro (obligatorios), cálculo de subtotal, ISV y total,
- * y descuento automático del stock al registrar.
- * Formulario creado como JFrame Form: ábralo en NetBeans con la pestaña "Design".
- */
+
 public class FrmVentas extends javax.swing.JFrame {
 
     private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -31,9 +27,9 @@ public class FrmVentas extends javax.swing.JFrame {
     private final DefaultTableModel modeloDetalle = UtilVista.modeloTabla(
             "Tipo", "Código", "Producto", "Precio unit.", "Cantidad", "Subtotal");
     private Venta venta;
-    private boolean cargando;   // evita reaccionar a eventos mientras se llenan los combos
+    private boolean cargando;
 
-    /** Solo para el editor visual de NetBeans. */
+
     public FrmVentas() {
         this(Sesion.getUsuario());
     }
@@ -308,21 +304,21 @@ public class FrmVentas extends javax.swing.JFrame {
             if (!UtilVista.confirmar(this, "¿Registrar la venta por " + UtilVista.dinero(venta.getTotal()) + "?")) {
                 return;
             }
-            servicio.registrar(venta);   // guarda la venta y descuenta el stock
+            servicio.registrar(venta);
 
             StringBuilder msg = new StringBuilder("Venta registrada correctamente.\n\n")
                     .append("N.º de venta: ").append(venta.getNumeroVenta()).append("\n")
                     .append("Total: ").append(UtilVista.dinero(venta.getTotal()));
             List<String> avisos = servicio.avisosStockBajo(venta);
             if (!avisos.isEmpty()) {
-                msg.append("\n\n⚠ Aros con stock bajo después de la venta:");
+                msg.append("\n\nAros con stock bajo después de la venta:");
                 for (String a : avisos) {
-                    msg.append("\n• ").append(a);
+                    msg.append("\n- ").append(a);
                 }
             }
             UtilVista.info(this, msg.toString());
             nuevaVenta();
-            cargarProductos();   // vuelve a leer el stock actualizado
+            cargarProductos();
         });
     }//GEN-LAST:event_btnRegistrarActionPerformed
 

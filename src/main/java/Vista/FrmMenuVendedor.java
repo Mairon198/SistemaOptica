@@ -7,16 +7,12 @@ import modelo.Rol;
 import modelo.Usuario;
 import servicio.InventarioService;
 
-/**
- * Menú principal del rol VENDEDOR: acceso a inventario y ventas, y alerta de stock bajo.
- * Formulario creado como JFrame Form: ábralo en NetBeans con la pestaña "Design".
- */
 public class FrmMenuVendedor extends javax.swing.JFrame {
 
     private final Usuario usuario;
     private final InventarioService inventarioService = new InventarioService();
 
-    /** Solo para el editor visual de NetBeans; la aplicación usa el constructor con Usuario. */
+
     public FrmMenuVendedor() {
         this.usuario = null;
         initComponents();
@@ -35,12 +31,12 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowOpened(java.awt.event.WindowEvent e) {
-                actualizarAlertaStock(true);      // al entrar: aviso emergente si hay stock bajo
+                actualizarAlertaStock(true);
             }
 
             @Override
             public void windowActivated(java.awt.event.WindowEvent e) {
-                actualizarAlertaStock(false);     // al volver de otra ventana: solo actualiza el texto
+                actualizarAlertaStock(false);
             }
         });
     }
@@ -132,7 +128,7 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
         if (!UtilVista.confirmar(this, "¿Desea cerrar la sesión?")) {
             return;
         }
-        // Cierra también las ventanas de inventario o ventas que hayan quedado abiertas
+
         for (java.awt.Window w : java.awt.Window.getWindows()) {
             if (w != this && w.isDisplayable()) {
                 w.dispose();
@@ -153,13 +149,13 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
                 lblAlertaStock.setForeground(new java.awt.Color(30, 120, 50));
                 return;
             }
-            lblAlertaStock.setText("⚠ " + bajos.size() + " modelo(s) de aro con stock bajo (menos de "
+            lblAlertaStock.setText("" + bajos.size() + " modelo(s) de aro con stock bajo (menos de "
                     + InventarioService.LIMITE_STOCK_BAJO + " unidades).");
             lblAlertaStock.setForeground(new java.awt.Color(180, 30, 30));
             if (mostrarAviso) {
                 StringBuilder sb = new StringBuilder("Aros con stock bajo:\n\n");
                 for (Aro a : bajos) {
-                    sb.append("• ").append(a.getCodigo()).append(" - ").append(a.getNombre())
+                    sb.append("- ").append(a.getCodigo()).append(" - ").append(a.getNombre())
                       .append(": ").append(a.getStock()).append(" unidad(es)\n");
                 }
                 JOptionPane.showMessageDialog(this, sb.toString(), "Alerta de stock", JOptionPane.WARNING_MESSAGE);
