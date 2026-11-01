@@ -219,12 +219,10 @@ public class VentaService {
     public List<String> avisosStockBajo(Venta venta) {
         List<String> avisos = new ArrayList<>();
         for (DetalleVenta d : venta.getDetalles()) {
-            if (Producto.TIPO_ARO.equals(d.getProducto().getTipo())) {
-                Aro actual = inventarioService.buscarAroPorId(d.getProducto().getIdProducto());
-                if (actual != null && InventarioService.esStockBajo(actual)) {
-                    avisos.add(actual.getCodigo() + " - " + actual.getNombre()
-                            + ": quedan " + actual.getStock() + " unidad(es)");
-                }
+            Producto actual = inventarioService.buscarProductoPorId(d.getProducto().getTipo(), d.getProducto().getIdProducto());
+            if (actual != null && InventarioService.esStockBajo(actual)) {
+                avisos.add(actual.getCodigo() + " - " + actual.getNombre()
+                        + ": quedan " + actual.getStock() + " unidad(es)");
             }
         }
         return avisos;

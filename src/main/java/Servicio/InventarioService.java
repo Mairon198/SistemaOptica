@@ -96,18 +96,53 @@ public class InventarioService {
         }
     }
 
-    public List<Aro> arosConStockBajo() {
-        List<Aro> bajos = new ArrayList<>();
-        for (Aro a : aroDAO.listar()) {
-            if (esStockBajo(a)) {
-                bajos.add(a);
-            }
+    //Aros: menos de 5 unidades. Lunas y accesorios: su stock minimo o menos
+    public static boolean esStockBajo(Producto p) {
+        if (Producto.TIPO_ARO.equals(p.getTipo())) {
+            return p.getStock() < LIMITE_STOCK_BAJO;
         }
+        return p.getStock() <= p.getStockMinimo();
+    }
+
+    public List<Aro> arosConStockBajo() {
+        return filtrarStockBajo(aroDAO.listar());
+    }
+
+    public List<Luna> lunasConStockBajo() {
+        return filtrarStockBajo(lunaDAO.listar());
+    }
+
+    public List<Accesorio> accesoriosConStockBajo() {
+        return filtrarStockBajo(accesorioDAO.listar());
+    }
+
+    public List<Producto> productosConStockBajo() {
+        List<Producto> bajos = new ArrayList<>();
+        bajos.addAll(arosConStockBajo());
+        bajos.addAll(lunasConStockBajo());
+        bajos.addAll(accesoriosConStockBajo());
         return bajos;
     }
 
-    public static boolean esStockBajo(Producto p) {
-        return p.getStock() < LIMITE_STOCK_BAJO;
+    public Producto buscarProductoPorId(String tipo, int idProducto) {
+        switch (tipo) {
+            case Producto.TIPO_LUNA:
+                return lunaDAO.buscarPorId(idProducto);
+            case Producto.TIPO_ACCESORIO:
+                return accesorioDAO.buscarPorId(idProducto);
+            default:
+                return aroDAO.buscarPorId(idProducto);
+        }
+    }
+
+    private <T extends Producto> List<T> filtrarStockBajo(List<T> productos) {
+        List<T> bajos = new ArrayList<>();
+        for (T p : productos) {
+            if (esStockBajo(p)) {
+                bajos.add(p);
+            }
+        }
+        return bajos;
     }
 
 

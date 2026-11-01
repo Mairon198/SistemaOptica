@@ -345,7 +345,7 @@ public class FrmVentas extends javax.swing.JFrame {
                     .append("Total: ").append(UtilVista.dinero(venta.getTotal()));
             List<String> avisos = servicio.avisosStockBajo(venta);
             if (!avisos.isEmpty()) {
-                msg.append("\n\nAros con stock bajo después de la venta:");
+                msg.append("\n\nProductos con stock bajo después de la venta:");
                 for (String a : avisos) {
                     msg.append("\n- ").append(a);
                 }

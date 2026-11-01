@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntFunction;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -39,9 +40,9 @@ public class FrmInventario extends javax.swing.JFrame {
 
     public FrmInventario() {
         initComponents();
-        configurarTabla(tblAro, modeloAros, true);
-        configurarTabla(tblLuna, modeloLunas, false);
-        configurarTabla(tblAccesorio, modeloAccesorios, false);
+        configurarTabla(tblAro, modeloAros, f -> f < aros.size() ? aros.get(f) : null);
+        configurarTabla(tblLuna, modeloLunas, f -> f < lunas.size() ? lunas.get(f) : null);
+        configurarTabla(tblAccesorio, modeloAccesorios, f -> f < accesorios.size() ? accesorios.get(f) : null);
         tblAro.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 mostrarAro();
@@ -123,6 +124,7 @@ public class FrmInventario extends javax.swing.JFrame {
         txtBuscarLuna = new javax.swing.JTextField();
         btnBuscarLuna = new javax.swing.JButton();
         btnTodosLuna = new javax.swing.JButton();
+        btnStockBajoLuna = new javax.swing.JButton();
         scrLuna = new javax.swing.JScrollPane();
         tblLuna = new javax.swing.JTable();
         pnlSurLuna = new javax.swing.JPanel();
@@ -157,6 +159,7 @@ public class FrmInventario extends javax.swing.JFrame {
         txtBuscarAccesorio = new javax.swing.JTextField();
         btnBuscarAccesorio = new javax.swing.JButton();
         btnTodosAccesorio = new javax.swing.JButton();
+        btnStockBajoAccesorio = new javax.swing.JButton();
         scrAccesorio = new javax.swing.JScrollPane();
         tblAccesorio = new javax.swing.JTable();
         pnlSurAccesorio = new javax.swing.JPanel();
@@ -362,6 +365,10 @@ public class FrmInventario extends javax.swing.JFrame {
         btnTodosLuna.addActionListener(this::btnTodosLunaActionPerformed);
         pnlBuscarLuna.add(btnTodosLuna);
 
+        btnStockBajoLuna.setText("Ver stock bajo");
+        btnStockBajoLuna.addActionListener(this::btnStockBajoLunaActionPerformed);
+        pnlBuscarLuna.add(btnStockBajoLuna);
+
         pnlLuna.add(pnlBuscarLuna, java.awt.BorderLayout.NORTH);
 
         scrLuna.setPreferredSize(new java.awt.Dimension(980, 260));
@@ -485,6 +492,10 @@ public class FrmInventario extends javax.swing.JFrame {
         btnTodosAccesorio.setText("Ver todos");
         btnTodosAccesorio.addActionListener(this::btnTodosAccesorioActionPerformed);
         pnlBuscarAccesorio.add(btnTodosAccesorio);
+
+        btnStockBajoAccesorio.setText("Ver stock bajo");
+        btnStockBajoAccesorio.addActionListener(this::btnStockBajoAccesorioActionPerformed);
+        pnlBuscarAccesorio.add(btnStockBajoAccesorio);
 
         pnlAccesorio.add(pnlBuscarAccesorio, java.awt.BorderLayout.NORTH);
 
@@ -663,6 +674,10 @@ public class FrmInventario extends javax.swing.JFrame {
         UtilVista.ejecutar(this, () -> cargarLunas(servicio.listarLunas()));
     }//GEN-LAST:event_btnTodosLunaActionPerformed
 
+    private void btnStockBajoLunaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStockBajoLunaActionPerformed
+        UtilVista.ejecutar(this, () -> cargarLunas(servicio.lunasConStockBajo()));
+    }//GEN-LAST:event_btnStockBajoLunaActionPerformed
+
     private void btnNuevoLunaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoLunaActionPerformed
         limpiarLuna();
     }//GEN-LAST:event_btnNuevoLunaActionPerformed
@@ -685,6 +700,7 @@ public class FrmInventario extends javax.swing.JFrame {
             }
             limpiarLuna();
             cargarLunas(servicio.listarLunas());
+            actualizarAlerta();
         });
     }//GEN-LAST:event_btnGuardarLunaActionPerformed
 
@@ -700,6 +716,7 @@ public class FrmInventario extends javax.swing.JFrame {
             servicio.eliminarLuna(idLuna);
             limpiarLuna();
             cargarLunas(servicio.listarLunas());
+            actualizarAlerta();
         });
     }//GEN-LAST:event_btnEliminarLunaActionPerformed
 
@@ -715,6 +732,10 @@ public class FrmInventario extends javax.swing.JFrame {
         txtBuscarAccesorio.setText("");
         UtilVista.ejecutar(this, () -> cargarAccesorios(servicio.listarAccesorios()));
     }//GEN-LAST:event_btnTodosAccesorioActionPerformed
+
+    private void btnStockBajoAccesorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStockBajoAccesorioActionPerformed
+        UtilVista.ejecutar(this, () -> cargarAccesorios(servicio.accesoriosConStockBajo()));
+    }//GEN-LAST:event_btnStockBajoAccesorioActionPerformed
 
     private void btnNuevoAccesorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoAccesorioActionPerformed
         limpiarAccesorio();
@@ -738,6 +759,7 @@ public class FrmInventario extends javax.swing.JFrame {
             }
             limpiarAccesorio();
             cargarAccesorios(servicio.listarAccesorios());
+            actualizarAlerta();
         });
     }//GEN-LAST:event_btnGuardarAccesorioActionPerformed
 
@@ -753,6 +775,7 @@ public class FrmInventario extends javax.swing.JFrame {
             servicio.eliminarAccesorio(idAccesorio);
             limpiarAccesorio();
             cargarAccesorios(servicio.listarAccesorios());
+            actualizarAlerta();
         });
     }//GEN-LAST:event_btnEliminarAccesorioActionPerformed
 
@@ -761,27 +784,25 @@ public class FrmInventario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCerrarActionPerformed
 
 
-    private void configurarTabla(JTable tabla, DefaultTableModel modelo, boolean resaltarStockBajo) {
+    private void configurarTabla(JTable tabla, DefaultTableModel modelo, IntFunction<Producto> productoEnFila) {
         tabla.setModel(modelo);
         tabla.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tabla.setAutoCreateRowSorter(false);
         tabla.getColumnModel().getColumn(0).setMaxWidth(50);
-        if (resaltarStockBajo) {
-            tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-                @Override
-                public Component getTableCellRendererComponent(JTable t, Object valor, boolean seleccionado,
-                                                               boolean foco, int fila, int columna) {
-                    super.getTableCellRendererComponent(t, valor, seleccionado, foco, fila, columna);
-                    Object stock = t.getModel().getValueAt(fila, t.getModel().getColumnCount() - 1);
-                    boolean bajo = stock instanceof Integer && (Integer) stock < InventarioService.LIMITE_STOCK_BAJO;
-                    if (!seleccionado) {
-                        setBackground(bajo ? new Color(255, 225, 225) : t.getBackground());
-                        setForeground(bajo ? new Color(150, 20, 20) : t.getForeground());
-                    }
-                    return this;
+        tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable t, Object valor, boolean seleccionado,
+                                                           boolean foco, int fila, int columna) {
+                super.getTableCellRendererComponent(t, valor, seleccionado, foco, fila, columna);
+                Producto p = productoEnFila.apply(fila);
+                boolean bajo = p != null && InventarioService.esStockBajo(p);
+                if (!seleccionado) {
+                    setBackground(bajo ? new Color(255, 225, 225) : t.getBackground());
+                    setForeground(bajo ? new Color(150, 20, 20) : t.getForeground());
                 }
-            });
-        }
+                return this;
+            }
+        });
     }
 
     private void cargarAros(List<Aro> lista) {
@@ -814,15 +835,15 @@ public class FrmInventario extends javax.swing.JFrame {
     }
 
     private void actualizarAlerta() {
-        List<Aro> bajos = servicio.arosConStockBajo();
+        List<Producto> bajos = servicio.productosConStockBajo();
         if (bajos.isEmpty()) {
             lblAlertaStock.setText(" ");
             return;
         }
-        StringBuilder sb = new StringBuilder("Stock bajo (menos de " + InventarioService.LIMITE_STOCK_BAJO + "): ");
+        StringBuilder sb = new StringBuilder("Stock bajo: ");
         for (int i = 0; i < bajos.size(); i++) {
-            Aro a = bajos.get(i);
-            sb.append(i == 0 ? "" : ", ").append(a.getCodigo()).append(" (").append(a.getStock()).append(")");
+            Producto p = bajos.get(i);
+            sb.append(i == 0 ? "" : ", ").append(p.getCodigo()).append(" (").append(p.getStock()).append(")");
         }
         lblAlertaStock.setText(sb.toString());
     }
@@ -972,7 +993,9 @@ public class FrmInventario extends javax.swing.JFrame {
     private javax.swing.JButton btnNuevoAccesorio;
     private javax.swing.JButton btnNuevoAro;
     private javax.swing.JButton btnNuevoLuna;
+    private javax.swing.JButton btnStockBajoAccesorio;
     private javax.swing.JButton btnStockBajoAro;
+    private javax.swing.JButton btnStockBajoLuna;
     private javax.swing.JButton btnTodosAccesorio;
     private javax.swing.JButton btnTodosAro;
     private javax.swing.JButton btnTodosLuna;

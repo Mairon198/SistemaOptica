@@ -2,7 +2,7 @@ package vista;
 
 import java.util.List;
 import javax.swing.JOptionPane;
-import modelo.Aro;
+import modelo.Producto;
 import modelo.Rol;
 import modelo.Usuario;
 import servicio.InventarioService;
@@ -147,26 +147,24 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
         Navegador.cerrarSesion(this);
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
-    /** Muestra cuántos aros tienen menos de 5 unidades. */
     private void actualizarAlertaStock(boolean mostrarAviso) {
         if (usuario == null) {
             return;
         }
         try {
-            List<Aro> bajos = inventarioService.arosConStockBajo();
+            List<Producto> bajos = inventarioService.productosConStockBajo();
             if (bajos.isEmpty()) {
-                lblAlertaStock.setText("Stock de aros en orden.");
+                lblAlertaStock.setText("Stock del inventario en orden.");
                 lblAlertaStock.setForeground(new java.awt.Color(30, 120, 50));
                 return;
             }
-            lblAlertaStock.setText("" + bajos.size() + " modelo(s) de aro con stock bajo (menos de "
-                    + InventarioService.LIMITE_STOCK_BAJO + " unidades).");
+            lblAlertaStock.setText(bajos.size() + " producto(s) con stock bajo. Revise el inventario.");
             lblAlertaStock.setForeground(new java.awt.Color(180, 30, 30));
             if (mostrarAviso) {
-                StringBuilder sb = new StringBuilder("Aros con stock bajo:\n\n");
-                for (Aro a : bajos) {
-                    sb.append("- ").append(a.getCodigo()).append(" - ").append(a.getNombre())
-                      .append(": ").append(a.getStock()).append(" unidad(es)\n");
+                StringBuilder sb = new StringBuilder("Productos con stock bajo:\n\n");
+                for (Producto p : bajos) {
+                    sb.append("- ").append(p.getCodigo()).append(" - ").append(p.getNombre())
+                      .append(": ").append(p.getStock()).append(" unidad(es)\n");
                 }
                 JOptionPane.showMessageDialog(this, sb.toString(), "Alerta de stock", JOptionPane.WARNING_MESSAGE);
             }
