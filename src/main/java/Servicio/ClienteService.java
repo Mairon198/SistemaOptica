@@ -28,8 +28,8 @@ public class ClienteService {
         return clienteDAO.buscarPorId(idCliente);
     }
 
-    //Registra el cliente y le crea su cuenta (el usuario es el DNI)
-    public void registrar(Cliente c, char[] password) throws ValidacionException {
+    //Registra el cliente y le crea su cuenta de acceso
+    public void registrar(Cliente c, String usuario, char[] password) throws ValidacionException {
         try {
             c.setNombres(requerido(c.getNombres(), "Nombres"));
             c.setApellidos(requerido(c.getApellidos(), "Apellidos"));
@@ -37,6 +37,12 @@ public class ClienteService {
             c.setEmail(requerido(c.getEmail(), "Correo"));
             c.setTelefono(vacioANulo(c.getTelefono()));
             c.setDireccion(vacioANulo(c.getDireccion()));
+            usuario = requerido(usuario, "Usuario");
+
+            if (!usuario.matches("[A-Za-z0-9._-]{3,50}")) {
+                throw new ValidacionException("El usuario debe tener de 3 a 50 caracteres, sin espacios "
+                        + "(solo letras, números, punto, guion o guion bajo).");
+            }
 
             if (!c.getEmail().matches("[^@\\s]+@[^@\\s]+\\.[^@\\s]+")) {
                 throw new ValidacionException("El correo no es válido.");
@@ -47,8 +53,8 @@ public class ClienteService {
             if (clienteDAO.buscarPorDni(c.getDni()) != null) {
                 throw new ValidacionException("Ya existe un cliente registrado con ese DNI.");
             }
-            if (usuarioDAO.existe(c.getDni(), c.getEmail())) {
-                throw new ValidacionException("Ya existe una cuenta con ese DNI o correo.");
+            if (usuarioDAO.existe(usuario, c.getEmail())) {
+                throw new ValidacionException("Ese usuario o ese correo ya están registrados.");
             }
 
             c.setFechaRegistro(LocalDateTime.now());
@@ -59,7 +65,7 @@ public class ClienteService {
             }
 
             Usuario u = new Usuario();
-            u.setUsuario(c.getDni());
+            u.setUsuario(usuario);
             u.setEmail(c.getEmail());
             u.setPasswordHash(SeguridadUtil.hashear(password));
             u.setRol(Rol.CLIENTE);

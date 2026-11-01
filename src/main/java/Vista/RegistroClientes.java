@@ -30,6 +30,7 @@ public class RegistroClientes extends javax.swing.JFrame {
     txtApellidos.setText("");
     Txttelefono.setText("");
     txtcorreo.setText("");
+    txtUsuario.setText("");
     txtDireccion.setText("");
     txtContra.setText("");
 }
@@ -55,6 +56,8 @@ public class RegistroClientes extends javax.swing.JFrame {
         Txttelefono = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtcorreo = new javax.swing.JTextField();
+        lblUsuario = new javax.swing.JLabel();
+        txtUsuario = new javax.swing.JTextField();
         btnregistrar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         txtContra = new javax.swing.JPasswordField();
@@ -94,6 +97,10 @@ public class RegistroClientes extends javax.swing.JFrame {
         jLabel5.setText("Correo");
 
         txtcorreo.addActionListener(this::txtcorreoActionPerformed);
+
+        lblUsuario.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblUsuario.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblUsuario.setText("Usuario");
 
         btnregistrar.setText("Registrar");
         btnregistrar.addActionListener(this::btnregistrarActionPerformed);
@@ -160,7 +167,10 @@ public class RegistroClientes extends javax.swing.JFrame {
                                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                 .addComponent(Txttelefono)
-                                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(txtUsuario)
+                                                .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGap(0, 6, Short.MAX_VALUE)
@@ -181,7 +191,11 @@ public class RegistroClientes extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtcorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblUsuario)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -256,8 +270,8 @@ public class RegistroClientes extends javax.swing.JFrame {
         cliente.setEmail(txtcorreo.getText());
         cliente.setDireccion(txtDireccion.getText());
         try {
-            new ClienteService().registrar(cliente, txtContra.getPassword());
-            JOptionPane.showMessageDialog(this, "Cuenta creada correctamente.\nYa puede iniciar sesión con su correo o su DNI.");
+            new ClienteService().registrar(cliente, txtUsuario.getText(), txtContra.getPassword());
+            JOptionPane.showMessageDialog(this, "Cuenta creada correctamente.\nYa puede iniciar sesión con su usuario o su correo.");
             dispose();
         } catch (ValidacionException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Atención", JOptionPane.WARNING_MESSAGE);
@@ -312,7 +326,9 @@ public class RegistroClientes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lblApellidos;
+    private javax.swing.JLabel lblUsuario;
     private javax.swing.JTextField txtApellidos;
+    private javax.swing.JTextField txtUsuario;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
