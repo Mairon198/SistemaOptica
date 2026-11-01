@@ -1,10 +1,41 @@
 package dao.impl;
 
+import Conexion.ConexionDB;
+import dao.ProductoDAO;
 import java.sql.*;
 import modelo.Producto;
 
 
-public class ProductoDAOImpl {
+public class ProductoDAOImpl implements ProductoDAO {
+
+    @Override
+    public int buscarIdInactivoPorCodigo(String codigo, String tipo) {
+        String sql = "SELECT id_producto FROM producto WHERE codigo = ? AND tipo = ? AND activo = 0";
+        try (Connection con = ConexionDB.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, codigo);
+            ps.setString(2, tipo);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar producto eliminado: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    @Override
+    public boolean activar(int idProducto) {
+        String sql = "UPDATE producto SET activo = 1 WHERE id_producto = ?";
+        try (Connection con = ConexionDB.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idProducto);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al reactivar producto: " + e.getMessage());
+            return false;
+        }
+    }
 
     // Inserta en la tabla producto y devuelve el id generado
     public static int insertarProducto(Connection con, Producto p) throws SQLException {

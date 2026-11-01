@@ -3,9 +3,11 @@ package servicio;
 import dao.AccesorioDAO;
 import dao.AroDAO;
 import dao.LunaDAO;
+import dao.ProductoDAO;
 import dao.impl.AccesorioDAOImpl;
 import dao.impl.AroDAOImpl;
 import dao.impl.LunaDAOImpl;
+import dao.impl.ProductoDAOImpl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +24,53 @@ public class InventarioService {
     private final AroDAO aroDAO;
     private final LunaDAO lunaDAO;
     private final AccesorioDAO accesorioDAO;
+    private final ProductoDAO productoDAO;
 
     public InventarioService() {
         this(new AroDAOImpl(), new LunaDAOImpl(), new AccesorioDAOImpl());
     }
 
     public InventarioService(AroDAO aroDAO, LunaDAO lunaDAO, AccesorioDAO accesorioDAO) {
+        this(aroDAO, lunaDAO, accesorioDAO, new ProductoDAOImpl());
+    }
+
+    public InventarioService(AroDAO aroDAO, LunaDAO lunaDAO, AccesorioDAO accesorioDAO, ProductoDAO productoDAO) {
         this.aroDAO = aroDAO;
         this.lunaDAO = lunaDAO;
         this.accesorioDAO = accesorioDAO;
+        this.productoDAO = productoDAO;
+    }
+
+    //Si el codigo de un producto nuevo pertenece a uno eliminado del mismo tipo, devuelve su id (si no, 0)
+    public int idEliminadoConCodigo(Producto p) {
+        if (p.getIdProducto() != 0 || vacio(p.getCodigo())) {
+            return 0;
+        }
+        return productoDAO.buscarIdInactivoPorCodigo(p.getCodigo().trim().toUpperCase(), p.getTipo());
+    }
+
+    public void reactivarAro(Aro aro, int idProducto) throws ValidacionException {
+        validarProducto(aro);
+        aro.setIdProducto(idProducto);
+        reactivar(aroDAO.actualizar(aro), idProducto);
+    }
+
+    public void reactivarLuna(Luna luna, int idProducto) throws ValidacionException {
+        validarProducto(luna);
+        luna.setIdProducto(idProducto);
+        reactivar(lunaDAO.actualizar(luna), idProducto);
+    }
+
+    public void reactivarAccesorio(Accesorio accesorio, int idProducto) throws ValidacionException {
+        validarProducto(accesorio);
+        accesorio.setIdProducto(idProducto);
+        reactivar(accesorioDAO.actualizar(accesorio), idProducto);
+    }
+
+    private void reactivar(boolean actualizado, int idProducto) throws ValidacionException {
+        if (!actualizado || !productoDAO.activar(idProducto)) {
+            throw new ValidacionException("No se pudo reactivar el producto. Verifique la conexión.");
+        }
     }
 
 

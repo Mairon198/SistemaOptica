@@ -614,9 +614,20 @@ public class FrmInventario extends javax.swing.JFrame {
 
     private void btnGuardarAroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarAroActionPerformed
         UtilVista.ejecutar(this, () -> {
+            Aro producto = construirAro();
             boolean esNuevo = idAro == 0;
-            servicio.guardarAro(construirAro());
-            UtilVista.info(this, esNuevo ? "Aro registrado correctamente." : "Aro actualizado correctamente.");
+            int idEliminado = servicio.idEliminadoConCodigo(producto);
+            if (idEliminado > 0) {
+                if (!UtilVista.confirmar(this, "Ya existe un aro eliminado con el código " + producto.getCodigo()
+                        + ".\n¿Desea reactivarlo con estos datos?")) {
+                    return;
+                }
+                servicio.reactivarAro(producto, idEliminado);
+                UtilVista.info(this, "Aro reactivado correctamente.");
+            } else {
+                servicio.guardarAro(producto);
+                UtilVista.info(this, esNuevo ? "Aro registrado correctamente." : "Aro actualizado correctamente.");
+            }
             limpiarAro();
             cargarAros(servicio.listarAros());
             actualizarAlerta();
@@ -658,9 +669,20 @@ public class FrmInventario extends javax.swing.JFrame {
 
     private void btnGuardarLunaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarLunaActionPerformed
         UtilVista.ejecutar(this, () -> {
+            Luna producto = construirLuna();
             boolean esNuevo = idLuna == 0;
-            servicio.guardarLuna(construirLuna());
-            UtilVista.info(this, esNuevo ? "Luna registrada correctamente." : "Luna actualizada correctamente.");
+            int idEliminado = servicio.idEliminadoConCodigo(producto);
+            if (idEliminado > 0) {
+                if (!UtilVista.confirmar(this, "Ya existe una luna eliminada con el código " + producto.getCodigo()
+                        + ".\n¿Desea reactivarla con estos datos?")) {
+                    return;
+                }
+                servicio.reactivarLuna(producto, idEliminado);
+                UtilVista.info(this, "Luna reactivada correctamente.");
+            } else {
+                servicio.guardarLuna(producto);
+                UtilVista.info(this, esNuevo ? "Luna registrada correctamente." : "Luna actualizada correctamente.");
+            }
             limpiarLuna();
             cargarLunas(servicio.listarLunas());
         });
@@ -700,9 +722,20 @@ public class FrmInventario extends javax.swing.JFrame {
 
     private void btnGuardarAccesorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarAccesorioActionPerformed
         UtilVista.ejecutar(this, () -> {
+            Accesorio producto = construirAccesorio();
             boolean esNuevo = idAccesorio == 0;
-            servicio.guardarAccesorio(construirAccesorio());
-            UtilVista.info(this, esNuevo ? "Accesorio registrado correctamente." : "Accesorio actualizado correctamente.");
+            int idEliminado = servicio.idEliminadoConCodigo(producto);
+            if (idEliminado > 0) {
+                if (!UtilVista.confirmar(this, "Ya existe un accesorio eliminado con el código " + producto.getCodigo()
+                        + ".\n¿Desea reactivarlo con estos datos?")) {
+                    return;
+                }
+                servicio.reactivarAccesorio(producto, idEliminado);
+                UtilVista.info(this, "Accesorio reactivado correctamente.");
+            } else {
+                servicio.guardarAccesorio(producto);
+                UtilVista.info(this, esNuevo ? "Accesorio registrado correctamente." : "Accesorio actualizado correctamente.");
+            }
             limpiarAccesorio();
             cargarAccesorios(servicio.listarAccesorios());
         });
