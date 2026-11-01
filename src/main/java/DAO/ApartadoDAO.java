@@ -9,6 +9,8 @@ public interface ApartadoDAO {
 
     ArrayList<Apartado> listarPorCliente(int idCliente);
 
+    ArrayList<Apartado> listar(boolean soloActivos);
+
     boolean existeActivo(int idCliente, int idProducto);
 
     boolean cancelar(int idApartado, int idCliente);

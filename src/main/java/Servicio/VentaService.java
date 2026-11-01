@@ -1,8 +1,10 @@
 package servicio;
 
+import dao.ApartadoDAO;
 import dao.ClienteDAO;
 import dao.MedicionDAO;
 import dao.VentaDAO;
+import dao.impl.ApartadoDAOImpl;
 import dao.impl.ClienteDAOImpl;
 import dao.impl.MedicionDAOImpl;
 import dao.impl.VentaDAOImpl;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Apartado;
 import modelo.Aro;
 import modelo.Cliente;
 import modelo.DetalleVenta;
@@ -30,6 +33,7 @@ public class VentaService {
     private final ClienteDAO clienteDAO;
     private final MedicionDAO medicionDAO;
     private final InventarioService inventarioService;
+    private final ApartadoDAO apartadoDAO;
 
     public VentaService() {
         this(new VentaDAOImpl(), new ClienteDAOImpl(), new MedicionDAOImpl(), new InventarioService());
@@ -37,10 +41,16 @@ public class VentaService {
 
     public VentaService(VentaDAO ventaDAO, ClienteDAO clienteDAO, MedicionDAO medicionDAO,
                         InventarioService inventarioService) {
+        this(ventaDAO, clienteDAO, medicionDAO, inventarioService, new ApartadoDAOImpl());
+    }
+
+    public VentaService(VentaDAO ventaDAO, ClienteDAO clienteDAO, MedicionDAO medicionDAO,
+                        InventarioService inventarioService, ApartadoDAO apartadoDAO) {
         this.ventaDAO = ventaDAO;
         this.clienteDAO = clienteDAO;
         this.medicionDAO = medicionDAO;
         this.inventarioService = inventarioService;
+        this.apartadoDAO = apartadoDAO;
     }
 
 
@@ -103,6 +113,44 @@ public class VentaService {
             existente.setCantidad(cantidadTotal);
         }
         calcularTotales(venta);
+    }
+
+    //Aros que el cliente tiene apartados (estado APARTADO)
+    public List<Apartado> apartadosActivos(int idCliente) {
+        List<Apartado> activos = new ArrayList<>();
+        for (Apartado a : apartadoDAO.listarPorCliente(idCliente)) {
+            if (a.isActivo()) {
+                activos.add(a);
+            }
+        }
+        return activos;
+    }
+
+    //Agrega a la venta los aros apartados; devuelve los que no se pudieron agregar
+    public List<String> agregarApartados(Venta venta, List<Apartado> apartados) {
+        List<String> avisos = new ArrayList<>();
+        for (Apartado a : apartados) {
+            boolean yaEsta = false;
+            for (DetalleVenta d : venta.getDetalles()) {
+                if (d.getProducto().getIdProducto() == a.getAro().getIdProducto()) {
+                    yaEsta = true;
+                    break;
+                }
+            }
+            if (yaEsta) {
+                continue;
+            }
+            Aro actual = inventarioService.buscarAroPorId(a.getAro().getIdProducto());
+            try {
+                if (actual == null || !actual.isActivo()) {
+                    throw new ValidacionException("ya no está disponible");
+                }
+                agregarProducto(venta, actual, 1);
+            } catch (ValidacionException ex) {
+                avisos.add(a.getAro().getCodigo() + " - " + a.getAro().getNombre() + ": " + ex.getMessage());
+            }
+        }
+        return avisos;
     }
 
     public void quitarProducto(Venta venta, int indice) {

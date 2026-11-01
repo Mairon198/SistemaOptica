@@ -10,6 +10,16 @@ import modelo.Cliente;
 
 public class ApartadoDAOImpl implements ApartadoDAO {
 
+    private static final String SELECT_APARTADOS =
+            "SELECT a.id_apartado, a.id_cliente, a.fecha, a.estado, a.observaciones, "
+          + "c.nombres, c.apellidos, c.dni, "
+          + "p.id_producto, p.codigo, p.nombre, p.marca, p.precio, p.stock, p.stock_minimo, p.activo, "
+          + "ar.material, ar.forma, ar.color, ar.genero, ar.medidas, ar.imagen_url "
+          + "FROM apartado a "
+          + "INNER JOIN cliente c ON c.idCliente = a.id_cliente "
+          + "INNER JOIN producto p ON p.id_producto = a.id_producto "
+          + "INNER JOIN aro ar ON ar.id_producto = a.id_producto ";
+
     @Override
     public boolean insertar(Apartado a) {
         String sql = "INSERT INTO apartado(id_cliente, id_producto, observaciones) VALUES (?,?,?)";
@@ -36,13 +46,7 @@ public class ApartadoDAOImpl implements ApartadoDAO {
     @Override
     public ArrayList<Apartado> listarPorCliente(int idCliente) {
         ArrayList<Apartado> lista = new ArrayList<>();
-        String sql = "SELECT a.id_apartado, a.id_cliente, a.fecha, a.estado, a.observaciones, "
-                + "p.id_producto, p.codigo, p.nombre, p.marca, p.precio, p.stock, p.stock_minimo, p.activo, "
-                + "ar.material, ar.forma, ar.color, ar.genero, ar.medidas, ar.imagen_url "
-                + "FROM apartado a "
-                + "INNER JOIN producto p ON p.id_producto = a.id_producto "
-                + "INNER JOIN aro ar ON ar.id_producto = a.id_producto "
-                + "WHERE a.id_cliente = ? ORDER BY a.fecha DESC";
+        String sql = SELECT_APARTADOS + "WHERE a.id_cliente = ? ORDER BY a.fecha DESC";
         try (Connection con = ConexionDB.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idCliente);
@@ -50,6 +54,22 @@ public class ApartadoDAOImpl implements ApartadoDAO {
                 while (rs.next()) {
                     lista.add(crearApartado(rs));
                 }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar apartados: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    @Override
+    public ArrayList<Apartado> listar(boolean soloActivos) {
+        ArrayList<Apartado> lista = new ArrayList<>();
+        String sql = SELECT_APARTADOS + (soloActivos ? "WHERE a.estado = 'APARTADO' " : "") + "ORDER BY a.fecha DESC";
+        try (Connection con = ConexionDB.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(crearApartado(rs));
             }
         } catch (SQLException e) {
             System.err.println("Error al listar apartados: " + e.getMessage());
@@ -93,6 +113,9 @@ public class ApartadoDAOImpl implements ApartadoDAO {
         a.setIdApartado(rs.getInt("id_apartado"));
         Cliente c = new Cliente();
         c.setIdCliente(rs.getInt("id_cliente"));
+        c.setNombres(rs.getString("nombres"));
+        c.setApellidos(rs.getString("apellidos"));
+        c.setDni(rs.getString("dni"));
         a.setCliente(c);
         Timestamp fecha = rs.getTimestamp("fecha");
         a.setFecha(fecha == null ? null : fecha.toLocalDateTime());

@@ -99,6 +99,23 @@ public class CatalogoService {
         }
     }
 
+    //Para el vendedor: apartados de todos los clientes
+    public List<Apartado> listarApartadosClientes(boolean soloActivos) {
+        return apartadoDAO.listar(soloActivos);
+    }
+
+    public void cancelarApartadoCliente(Apartado apartado) throws ValidacionException {
+        if (apartado == null) {
+            throw new ValidacionException("Seleccione el apartado que desea cancelar.");
+        }
+        if (!apartado.isActivo()) {
+            throw new ValidacionException("Solo se pueden cancelar los apartados en estado APARTADO.");
+        }
+        if (!apartadoDAO.cancelar(apartado.getIdApartado(), apartado.getCliente().getIdCliente())) {
+            throw new ValidacionException("No se pudo cancelar el apartado.");
+        }
+    }
+
     private int idCliente(Usuario usuario) throws ValidacionException {
         if (usuario == null || usuario.getIdCliente() == null) {
             throw new ValidacionException("Su cuenta no está asociada a un cliente.");

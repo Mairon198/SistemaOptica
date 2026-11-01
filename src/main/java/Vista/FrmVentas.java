@@ -3,10 +3,13 @@ package vista;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
+import modelo.Apartado;
+import modelo.Aro;
 import modelo.Cliente;
 import modelo.DetalleVenta;
 import modelo.Medicion;
@@ -27,6 +30,7 @@ public class FrmVentas extends javax.swing.JFrame {
     private final DefaultTableModel modeloDetalle = UtilVista.modeloTabla(
             "Tipo", "Código", "Producto", "Precio unit.", "Cantidad", "Subtotal");
     private Venta venta;
+    private List<Apartado> apartadosCliente = new ArrayList<>();
     private boolean cargando;
 
 
@@ -98,6 +102,9 @@ public class FrmVentas extends javax.swing.JFrame {
         btnQuitar = new javax.swing.JButton();
         scrDetalle = new javax.swing.JScrollPane();
         tblDetalle = new javax.swing.JTable();
+        pnlApartadosCliente = new javax.swing.JPanel();
+        lblApartadosCliente = new javax.swing.JLabel();
+        btnAgregarApartados = new javax.swing.JButton();
         pnlSur = new javax.swing.JPanel();
         pnlBotones = new javax.swing.JPanel();
         btnRegistrar = new javax.swing.JButton();
@@ -204,6 +211,16 @@ public class FrmVentas extends javax.swing.JFrame {
 
         pnlProductos.add(scrDetalle, java.awt.BorderLayout.CENTER);
 
+        pnlApartadosCliente.setLayout(new java.awt.BorderLayout(8, 0));
+        lblApartadosCliente.setText(" ");
+        pnlApartadosCliente.add(lblApartadosCliente, java.awt.BorderLayout.CENTER);
+
+        btnAgregarApartados.setText("Agregar aros apartados");
+        btnAgregarApartados.addActionListener(this::btnAgregarApartadosActionPerformed);
+        pnlApartadosCliente.add(btnAgregarApartados, java.awt.BorderLayout.EAST);
+
+        pnlProductos.add(pnlApartadosCliente, java.awt.BorderLayout.SOUTH);
+
         pnlCentro.add(pnlProductos, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(pnlCentro, java.awt.BorderLayout.CENTER);
@@ -299,6 +316,16 @@ public class FrmVentas extends javax.swing.JFrame {
         refrescarDetalle();
     }//GEN-LAST:event_btnQuitarActionPerformed
 
+    private void btnAgregarApartadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarApartadosActionPerformed
+        UtilVista.ejecutar(this, () -> {
+            List<String> avisos = servicio.agregarApartados(venta, apartadosCliente);
+            refrescarDetalle();
+            if (!avisos.isEmpty()) {
+                UtilVista.info(this, "No se pudieron agregar:\n- " + String.join("\n- ", avisos));
+            }
+        });
+    }//GEN-LAST:event_btnAgregarApartadosActionPerformed
+
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         UtilVista.ejecutar(this, () -> {
             venta.setCliente((Cliente) cboCliente.getSelectedItem());
@@ -380,6 +407,24 @@ public class FrmVentas extends javax.swing.JFrame {
             cargando = false;
         }
         mostrarResumenMedicion();
+        cargarApartadosCliente();
+    }
+
+    private void cargarApartadosCliente() {
+        Cliente c = (Cliente) cboCliente.getSelectedItem();
+        apartadosCliente = c == null ? new ArrayList<>() : servicio.apartadosActivos(c.getIdCliente());
+        btnAgregarApartados.setEnabled(!apartadosCliente.isEmpty());
+        if (apartadosCliente.isEmpty()) {
+            lblApartadosCliente.setText("El cliente no tiene aros apartados.");
+            return;
+        }
+        StringBuilder sb = new StringBuilder("<html><b>Aros apartados por el cliente:</b> ");
+        for (int i = 0; i < apartadosCliente.size(); i++) {
+            Aro aro = apartadosCliente.get(i).getAro();
+            sb.append(i == 0 ? "" : ", ").append(aro.getCodigo()).append(" - ").append(aro.getNombre())
+              .append(" (").append(UtilVista.dinero(aro.getPrecio())).append(")");
+        }
+        lblApartadosCliente.setText(sb.append("</html>").toString());
     }
 
     private void cargarProductos() {
@@ -437,6 +482,7 @@ public class FrmVentas extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnAgregarApartados;
     private javax.swing.JButton btnCerrar;
     private javax.swing.JButton btnHistorial;
     private javax.swing.JButton btnLimpiar;
@@ -448,6 +494,7 @@ public class FrmVentas extends javax.swing.JFrame {
     private javax.swing.JComboBox<modelo.Producto> cboProducto;
     private javax.swing.JComboBox<String> cboTipoProducto;
     private javax.swing.JLabel lblCantidad;
+    private javax.swing.JLabel lblApartadosCliente;
     private javax.swing.JLabel lblCliente;
     private javax.swing.JLabel lblImpuesto;
     private javax.swing.JLabel lblImpuestoInfo;
@@ -465,6 +512,7 @@ public class FrmVentas extends javax.swing.JFrame {
     private javax.swing.JLabel lblTotalTxt;
     private javax.swing.JLabel lblVendedor;
     private javax.swing.JPanel pnlAgregar;
+    private javax.swing.JPanel pnlApartadosCliente;
     private javax.swing.JPanel pnlArriba;
     private javax.swing.JPanel pnlBotones;
     private javax.swing.JPanel pnlCentro;
