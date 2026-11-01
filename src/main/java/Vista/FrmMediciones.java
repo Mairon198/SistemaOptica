@@ -80,6 +80,7 @@ public class FrmMediciones extends javax.swing.JFrame {
         pnlBotones = new javax.swing.JPanel();
         btnNuevo = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         pnlPie = new javax.swing.JPanel();
         btnCerrar = new javax.swing.JButton();
 
@@ -92,7 +93,7 @@ public class FrmMediciones extends javax.swing.JFrame {
         lblTitulo.setText("Mediciones de lentes");
         pnlEncabezado.add(lblTitulo, java.awt.BorderLayout.CENTER);
 
-        lblIndicacion.setText("Seleccione el cliente, luego una medición de la tabla para editarla o presione Nuevo.");
+        lblIndicacion.setText("Seleccione el cliente, luego una medición de la tabla para editarla o eliminarla, o presione Nuevo.");
         pnlEncabezado.add(lblIndicacion, java.awt.BorderLayout.SOUTH);
 
         getContentPane().add(pnlEncabezado, java.awt.BorderLayout.NORTH);
@@ -191,6 +192,10 @@ public class FrmMediciones extends javax.swing.JFrame {
         btnGuardar.addActionListener(this::btnGuardarActionPerformed);
         pnlBotones.add(btnGuardar);
 
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(this::btnEliminarActionPerformed);
+        pnlBotones.add(btnEliminar);
+
         pnlDatos.add(pnlBotones, java.awt.BorderLayout.SOUTH);
 
         pnlCentro.add(pnlDatos, java.awt.BorderLayout.SOUTH);
@@ -244,6 +249,21 @@ public class FrmMediciones extends javax.swing.JFrame {
             cargarMediciones();
         });
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        if (idMedicion == 0) {
+            UtilVista.info(this, "Seleccione en la tabla la medición que desea eliminar.");
+            return;
+        }
+        if (!UtilVista.confirmar(this, "¿Eliminar la medición N.º " + idMedicion + "?")) {
+            return;
+        }
+        UtilVista.ejecutar(this, () -> {
+            servicio.eliminar(idMedicion);
+            UtilVista.info(this, "Medición eliminada.");
+            cargarMediciones();
+        });
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         dispose();
@@ -315,6 +335,7 @@ public class FrmMediciones extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JComboBox<modelo.Cliente> cboCliente;

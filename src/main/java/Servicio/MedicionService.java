@@ -63,6 +63,18 @@ public class MedicionService {
         }
     }
 
+    public void eliminar(int idMedicion) throws ValidacionException {
+        if (idMedicion == 0) {
+            throw new ValidacionException("Seleccione la medición que desea eliminar.");
+        }
+        if (medicionDAO.tieneVentas(idMedicion)) {
+            throw new ValidacionException("No se puede eliminar: esta medición está asociada a una venta.");
+        }
+        if (!medicionDAO.eliminar(idMedicion)) {
+            throw new ValidacionException("No se pudo eliminar la medición. Verifique la conexión.");
+        }
+    }
+
     private void validarRango(BigDecimal valor, String min, String max, String campo) throws ValidacionException {
         if (valor != null && (valor.compareTo(new BigDecimal(min)) < 0 || valor.compareTo(new BigDecimal(max)) > 0)) {
             throw new ValidacionException(campo + " debe estar entre " + min + " y " + max + ".");

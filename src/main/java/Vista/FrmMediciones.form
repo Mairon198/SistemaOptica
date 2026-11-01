@@ -56,7 +56,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblIndicacion">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Seleccione el cliente, luego una medición de la tabla para editarla o presione Nuevo."/>
+            <Property name="text" type="java.lang.String" value="Seleccione el cliente, luego una medición de la tabla para editarla o eliminarla, o presione Nuevo."/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
@@ -290,6 +290,14 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGuardarActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnEliminar">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Eliminar"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEliminarActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

@@ -91,6 +91,34 @@ public class MedicionDAOImpl implements MedicionDAO {
         }
     }
 
+    @Override
+    public boolean eliminar(int idMedicion) {
+        String sql = "DELETE FROM medicion WHERE id_medicion = ?";
+        try (Connection con = ConexionDB.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idMedicion);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar medición: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean tieneVentas(int idMedicion) {
+        String sql = "SELECT 1 FROM venta WHERE id_medicion = ?";
+        try (Connection con = ConexionDB.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idMedicion);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al consultar ventas de la medición: " + e.getMessage());
+            return true;
+        }
+    }
+
     private void llenarValores(PreparedStatement ps, Medicion m, int i) throws SQLException {
         ps.setBigDecimal(i, m.getOdEsfera());
         ps.setBigDecimal(i + 1, m.getOdCilindro());

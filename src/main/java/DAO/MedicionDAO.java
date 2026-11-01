@@ -15,4 +15,8 @@ public interface MedicionDAO {
     boolean insertar(Medicion medicion);
 
     boolean actualizar(Medicion medicion);
+
+    boolean eliminar(int idMedicion);
+
+    boolean tieneVentas(int idMedicion);
 }
