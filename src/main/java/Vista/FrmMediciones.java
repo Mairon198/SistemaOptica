@@ -37,6 +37,7 @@ public class FrmMediciones extends javax.swing.JFrame {
         cboCliente.setRenderer(UtilVista.<Cliente>renderer(c ->
                 c.getNombreCompleto() + (c.getDni() == null ? "" : "  (DNI " + c.getDni() + ")")));
         UtilVista.ejecutar(this, this::cargarClientes);
+        EstiloUI.aplicarTema(this, pnlEncabezado, btnGuardar);
     }
 
     /**

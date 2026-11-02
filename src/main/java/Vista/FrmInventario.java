@@ -64,6 +64,7 @@ public class FrmInventario extends javax.swing.JFrame {
             cargarAccesorios(servicio.listarAccesorios());
             actualizarAlerta();
         });
+        EstiloUI.aplicarTema(this, pnlEncabezado, btnGuardarAro, btnGuardarLuna, btnGuardarAccesorio);
     }
 
     /**

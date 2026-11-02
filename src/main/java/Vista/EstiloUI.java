@@ -1,15 +1,19 @@
 package vista;
 
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -17,17 +21,35 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonModel;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+import javax.swing.plaf.UIResource;
+import javax.swing.plaf.basic.BasicButtonUI;
+import javax.swing.plaf.basic.BasicGraphicsUtils;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 
+//Colores y estilos de todas las ventanas (mismo diseño del login)
 public final class EstiloUI {
 
     public static final Color PRIMARIO = new Color(0x0F766E);
@@ -38,8 +60,10 @@ public final class EstiloUI {
     public static final Color TEXTO_SUAVE = new Color(0x6B7280);
     public static final Color BORDE = new Color(0xD1D5DB);
     public static final Color FONDO_CLARO = new Color(0xF3F4F6);
+    public static final Color VERDE_CLARO = new Color(0xCCFBF1);
     public static final Color ERROR = new Color(0xB91C1C);
     public static final Color ERROR_FONDO = new Color(0xFEE2E2);
+    private static final Color DESHABILITADO = new Color(0x9CA3AF);
 
     private EstiloUI() {
     }
@@ -53,108 +77,67 @@ public final class EstiloUI {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
 
-    public static JLabel etiqueta(String texto) {
-        JLabel l = new JLabel(texto);
-        l.setFont(fuente(Font.BOLD, 12f));
-        l.setForeground(TEXTO);
-        l.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 6));
-        return l;
-    }
-
-    public static JLabel titulo(String texto, float tamano, Color color) {
-        JLabel l = new JLabel(texto);
-        l.setFont(fuente(Font.BOLD, tamano));
-        l.setForeground(color);
-        l.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 8));
-        return l;
-    }
-
-    public static JLabel subtitulo(String texto, Color color) {
-        JLabel l = new JLabel(texto);
-        l.setFont(fuente(Font.PLAIN, 13f));
-        l.setForeground(color);
-        l.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 24));
-        return l;
-    }
-
-    public static JLabel mensajeError(int alto) {
-        JLabel l = new JLabel(" ");
-        l.setFont(fuente(Font.PLAIN, 12f));
-        l.setForeground(ERROR);
-        l.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
-        l.setPreferredSize(new Dimension(10, alto));
-        l.setMinimumSize(new Dimension(10, alto));
-        return l;
-    }
-
-    public static void mostrarError(JLabel l, String texto) {
-        if (texto == null || texto.isBlank()) {
-            l.setOpaque(false);
-            l.setText(" ");
-        } else {
-            l.setOpaque(true);
-            l.setBackground(ERROR_FONDO);
-            l.setText("<html>" + texto + "</html>");
-        }
-        l.repaint();
-    }
+    // ---------- campos de texto ----------
 
     public static <T extends JTextField> T campo(T c) {
-        c.setFont(fuente(Font.PLAIN, 14f));
+        return campo(c, 14f, new Insets(10, 14, 10, 14));
+    }
+
+    public static <T extends JTextField> T campoCompacto(T c) {
+        return campo(c, 13f, new Insets(6, 10, 6, 10));
+    }
+
+    private static <T extends JTextField> T campo(T c, float tamano, Insets margen) {
+        c.setFont(fuente(Font.PLAIN, tamano));
         c.setForeground(TEXTO);
         c.setBackground(Color.WHITE);
         c.setCaretColor(PRIMARIO);
-        c.setBorder(new BordeRedondeado(BORDE, 1));
+        c.setBorder(new BordeRedondeado(BORDE, 1, margen));
         c.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                c.setBorder(new BordeRedondeado(PRIMARIO, 2));
-                c.repaint();
+                c.setBorder(new BordeRedondeado(PRIMARIO, 2, margen));
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                c.setBorder(new BordeRedondeado(BORDE, 1));
-                c.repaint();
+                c.setBorder(new BordeRedondeado(BORDE, 1, margen));
             }
         });
         return c;
     }
 
-    public static JCheckBox casilla(String texto) {
-        JCheckBox c = new JCheckBox(texto);
-        c.setOpaque(false);
-        c.setFont(fuente(Font.PLAIN, 12f));
-        c.setForeground(TEXTO_SUAVE);
-        c.setFocusPainted(false);
-        c.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 8));
-        c.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        return c;
+    // ---------- botones ----------
+
+    public static JButton primario(JButton b) {
+        return boton(b, new BotonUI(PRIMARIO, PRIMARIO_HOVER, PRIMARIO_PRESIONADO, null, Color.WHITE, null), 14f);
     }
 
-    public static JPanel campoConEtiqueta(String texto, JComponent campo) {
-        JPanel p = new JPanel();
-        p.setOpaque(false);
-        p.setLayout(new javax.swing.BoxLayout(p, javax.swing.BoxLayout.Y_AXIS));
-        JLabel l = etiqueta(texto);
-        l.setAlignmentX(Component.LEFT_ALIGNMENT);
-        l.setBorder(BorderFactory.createEmptyBorder(0, 2, 5, 0));
-        campo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        p.add(l);
-        p.add(campo);
-        return p;
+    public static JButton secundario(JButton b) {
+        return boton(b, new BotonUI(Color.WHITE, FONDO_CLARO, BORDE, BORDE, TEXTO, null), 13f);
     }
 
-    public static JButton botonPrimario(String texto) {
-        return new BotonRedondeado(texto, PRIMARIO, PRIMARIO_HOVER, PRIMARIO_PRESIONADO, Color.WHITE, null);
+    public static <T extends AbstractButton> T boton(T b, BotonUI ui, float tamano) {
+        b.setUI(ui);
+        b.setFont(fuente(Font.BOLD, tamano));
+        b.setOpaque(false);
+        b.setContentAreaFilled(false);
+        b.setFocusPainted(false);
+        b.setRolloverEnabled(true);
+        b.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return b;
     }
 
-    public static JButton botonSecundario(String texto) {
-        return new BotonRedondeado(texto, Color.WHITE, FONDO_CLARO, BORDE, TEXTO, BORDE);
+    //Botón de opciones tipo "Cliente / Vendedor"
+    public static JToggleButton segmento(JToggleButton b) {
+        boton(b, new BotonUI(null, FONDO_CLARO, FONDO_CLARO, null, TEXTO_SUAVE, PRIMARIO), 13f);
+        b.setPreferredSize(new Dimension(150, 36));
+        return b;
     }
 
-    public static JButton botonEnlace(String texto) {
-        JButton b = new JButton(texto);
+    //Botón que se ve como un enlace
+    public static JButton enlace(JButton b) {
         b.setFont(fuente(Font.BOLD, 13f));
         b.setForeground(PRIMARIO);
         b.setContentAreaFilled(false);
@@ -177,18 +160,258 @@ public final class EstiloUI {
         return b;
     }
 
-    public static JToggleButton botonSegmento(String texto) {
-        return new BotonSegmento(texto);
+    // ---------- etiquetas y casillas ----------
+
+    public static JCheckBox casilla(JCheckBox c) {
+        c.setOpaque(false);
+        c.setFont(fuente(Font.PLAIN, 12f));
+        c.setForeground(TEXTO_SUAVE);
+        c.setFocusPainted(false);
+        c.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return c;
+    }
+
+    public static JLabel etiqueta(JLabel l) {
+        l.setFont(fuente(Font.BOLD, 12f));
+        l.setForeground(TEXTO);
+        return l;
+    }
+
+    public static JLabel mensajeError(JLabel l, int alto) {
+        l.setText(" ");
+        l.setFont(fuente(Font.PLAIN, 12f));
+        l.setForeground(ERROR);
+        l.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
+        l.setPreferredSize(new Dimension(10, alto));
+        l.setMinimumSize(new Dimension(10, alto));
+        return l;
+    }
+
+    public static void mostrarError(JLabel l, String texto) {
+        if (texto == null || texto.isBlank()) {
+            l.setOpaque(false);
+            l.setText(" ");
+        } else {
+            l.setOpaque(true);
+            l.setBackground(ERROR_FONDO);
+            l.setText("<html>" + texto + "</html>");
+        }
+        l.repaint();
+    }
+
+    // ---------- tema para las ventanas ----------
+
+    //Aplica el diseño a toda la ventana: encabezado con degradado, botones, campos y tablas
+    public static void aplicarTema(JFrame ventana, JPanel encabezado, JButton... primarios) {
+        Dimension antes = ventana.getSize();
+        ventana.getContentPane().setBackground(Color.WHITE);
+        estilizar(ventana.getContentPane());
+        if (encabezado != null) {
+            encabezado(encabezado);
+        }
+        for (JButton b : primarios) {
+            primario(b);
+        }
+        ventana.pack();
+        Dimension despues = ventana.getSize();
+        ventana.setSize(Math.max(antes.width, despues.width), Math.max(antes.height, despues.height));
+        ventana.setLocationRelativeTo(null);
+    }
+
+    private static void estilizar(Container contenedor) {
+        for (Component c : contenedor.getComponents()) {
+            if (c instanceof JPanel p) {
+                p.setBackground(Color.WHITE);
+                if (p.getBorder() instanceof TitledBorder t) {
+                    p.setBorder(titulado(t.getTitle()));
+                }
+            } else if (c instanceof JScrollPane s) {
+                s.setBorder(BorderFactory.createLineBorder(BORDE));
+                s.getViewport().setBackground(Color.WHITE);
+            } else if (c instanceof JTable t) {
+                tabla(t);
+            } else if (c instanceof JTabbedPane tp) {
+                tp.setFont(fuente(Font.BOLD, 13f));
+                tp.setForeground(TEXTO);
+                tp.setBackground(Color.WHITE);
+            } else if (c instanceof JButton b) {
+                secundario(b);
+            } else if (c instanceof JCheckBox cb) {
+                casilla(cb);
+                cb.setForeground(TEXTO);
+            } else if (c instanceof JTextField tf) {
+                campoCompacto(tf);
+                if (!tf.isEditable()) {
+                    tf.setBackground(FONDO_CLARO);
+                }
+            } else if (c instanceof JTextArea ta) {
+                ta.setFont(fuente(Font.PLAIN, 13f));
+                ta.setForeground(TEXTO);
+            } else if (c instanceof JComboBox<?> cb) {
+                cb.setFont(fuente(Font.PLAIN, 13f));
+                cb.setBackground(Color.WHITE);
+            } else if (c instanceof JLabel l) {
+                Font f = l.getFont();
+                l.setFont(fuente(f.getStyle(), Math.max(12f, f.getSize2D())));
+                if (l.getForeground() instanceof UIResource || Color.BLACK.equals(l.getForeground())) {
+                    l.setForeground(TEXTO);
+                }
+            }
+            if (c instanceof JPanel || c instanceof JScrollPane || c instanceof JViewport || c instanceof JTabbedPane) {
+                estilizar((Container) c);
+            }
+        }
+    }
+
+    //Para las ventanas que no tienen panel de encabezado: se agrega uno arriba
+    public static void agregarEncabezado(JFrame ventana, String titulo, String subtitulo) {
+        JPanel p = new JPanel(new BorderLayout(0, 4));
+        JLabel t = new JLabel(titulo);
+        t.setFont(fuente(Font.BOLD, 24f));
+        JLabel s = new JLabel(subtitulo);
+        s.setFont(fuente(Font.PLAIN, 13f));
+        p.add(t, BorderLayout.CENTER);
+        p.add(s, BorderLayout.SOUTH);
+        Container contenido = ventana.getContentPane();
+        JPanel raiz = new JPanel(new BorderLayout());
+        raiz.add(p, BorderLayout.NORTH);
+        raiz.add(contenido, BorderLayout.CENTER);
+        ventana.setContentPane(raiz);
+        encabezado(p);
+    }
+
+    //Encabezado con el mismo degradado y logo del login
+    private static void encabezado(JPanel p) {
+        Insets i = p.getInsets();
+        p.setOpaque(true);
+        p.setBorder(new FondoDegradado(new Insets(Math.max(16, i.top), 24, Math.max(16, i.bottom), 24)));
+        JLabel titulo = null;
+        for (Component c : p.getComponents()) {
+            if (c instanceof JLabel l && (titulo == null || l.getFont().getSize2D() > titulo.getFont().getSize2D())) {
+                titulo = l;
+            }
+        }
+        for (Component c : p.getComponents()) {
+            if (c instanceof JLabel l) {
+                if (l == titulo) {
+                    l.setFont(fuente(Font.BOLD, 24f));
+                    l.setForeground(Color.WHITE);
+                } else if (l.getForeground() instanceof UIResource || TEXTO.equals(l.getForeground())) {
+                    l.setFont(fuente(Font.PLAIN, 13f));
+                    l.setForeground(VERDE_CLARO);
+                } else {
+                    //las alertas se ven en amarillo sobre el degradado
+                    l.setFont(fuente(Font.BOLD, 13f));
+                    l.setForeground(new Color(0xFDE68A));
+                }
+            } else if (c instanceof JComponent j) {
+                j.setOpaque(false);
+            }
+        }
+        if (p.getLayout() instanceof BorderLayout bl && bl.getLayoutComponent(BorderLayout.EAST) == null) {
+            JLabel logo = new JLabel(iconoGafas(76, Color.WHITE));
+            logo.setBorder(BorderFactory.createEmptyBorder(0, 16, 0, 0));
+            p.add(logo, BorderLayout.EAST);
+        }
+    }
+
+    private static Border titulado(String titulo) {
+        TitledBorder t = BorderFactory.createTitledBorder(new BordeRedondeado(BORDE, 1, new Insets(8, 10, 8, 10)), titulo);
+        t.setTitleFont(fuente(Font.BOLD, 13f));
+        t.setTitleColor(PRIMARIO);
+        return BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0), t);
+    }
+
+    public static void tabla(JTable t) {
+        t.setFont(fuente(Font.PLAIN, 13f));
+        t.setRowHeight(28);
+        t.setForeground(TEXTO);
+        t.setBackground(Color.WHITE);
+        t.setGridColor(new Color(0xE5E7EB));
+        t.setShowVerticalLines(false);
+        t.setSelectionBackground(VERDE_CLARO);
+        t.setSelectionForeground(TEXTO);
+        t.setIntercellSpacing(new Dimension(0, 1));
+        JTableHeader h = t.getTableHeader();
+        if (h != null) {
+            DefaultTableCellRenderer r = new DefaultTableCellRenderer();
+            r.setBackground(PRIMARIO);
+            r.setForeground(Color.WHITE);
+            r.setFont(fuente(Font.BOLD, 13f));
+            r.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+            r.setHorizontalAlignment(SwingConstants.LEFT);
+            h.setDefaultRenderer((table, valor, sel, foco, fila, col) -> {
+                r.setText(valor == null ? "" : valor.toString());
+                return r;
+            });
+            h.setPreferredSize(new Dimension(h.getPreferredSize().width, 32));
+            h.setBackground(PRIMARIO);
+        }
+    }
+
+    public static Icon iconoGafas(int ancho, Color color) {
+        return new IconoGafas(ancho, color);
+    }
+
+    // ---------- clases de dibujo ----------
+
+    //Panel con fondo degradado (se usa en el login y el registro)
+    public static class PanelDegradado extends JPanel {
+
+        public PanelDegradado() {
+            setOpaque(true);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            pintarDegradado(g, 0, 0, getWidth(), getHeight());
+        }
+    }
+
+    private static void pintarDegradado(Graphics g, int x, int y, int w, int h) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        suavizar(g2);
+        g2.translate(x, y);
+        g2.setPaint(new GradientPaint(0, 0, AZUL_OSCURO, w, h, PRIMARIO));
+        g2.fillRect(0, 0, w, h);
+        g2.setColor(new Color(255, 255, 255, 18));
+        float d = Math.min(w, h) * 1.4f;
+        g2.fill(new Ellipse2D.Float(w - d * 0.7f, -d * 0.35f, d, d));
+        g2.setColor(new Color(255, 255, 255, 14));
+        g2.fill(new Ellipse2D.Float(-d * 0.3f, h - d * 0.45f, d, d));
+        g2.dispose();
+    }
+
+    //Borde que pinta el degradado detrás de todo el panel del encabezado
+    private static final class FondoDegradado extends AbstractBorder {
+
+        private final Insets margen;
+
+        FondoDegradado(Insets margen) {
+            this.margen = margen;
+        }
+
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
+            pintarDegradado(g, x, y, w, h);
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return margen;
+        }
     }
 
     private static final class BordeRedondeado extends AbstractBorder {
 
         private final Color color;
         private final int grosor;
+        private final Insets margen;
 
-        BordeRedondeado(Color color, int grosor) {
+        BordeRedondeado(Color color, int grosor, Insets margen) {
             this.color = color;
             this.grosor = grosor;
+            this.margen = margen;
         }
 
         @Override
@@ -204,145 +427,112 @@ public final class EstiloUI {
 
         @Override
         public Insets getBorderInsets(Component c) {
-            return new Insets(10, 14, 10, 14);
+            return margen;
         }
     }
 
-    private static final class BotonRedondeado extends JButton {
+    //Dibuja los botones redondeados
+    public static final class BotonUI extends BasicButtonUI {
 
         private final Color fondo;
         private final Color hover;
         private final Color presionado;
         private final Color borde;
+        private final Color texto;
+        private final Color seleccionado;
 
-        BotonRedondeado(String texto, Color fondo, Color hover, Color presionado, Color textoColor, Color borde) {
-            super(texto);
+        BotonUI(Color fondo, Color hover, Color presionado, Color borde, Color texto, Color seleccionado) {
             this.fondo = fondo;
             this.hover = hover;
             this.presionado = presionado;
             this.borde = borde;
-            setForeground(textoColor);
-            setFont(fuente(Font.BOLD, 14f));
-            setContentAreaFilled(false);
-            setBorderPainted(false);
-            setFocusPainted(false);
-            setOpaque(false);
-            setRolloverEnabled(true);
-            setMargin(new Insets(10, 18, 10, 18));
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            this.texto = texto;
+            this.seleccionado = seleccionado;
         }
 
         @Override
-        public Dimension getPreferredSize() {
-            Dimension d = super.getPreferredSize();
-            return new Dimension(d.width, Math.max(d.height, 42));
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
+        public void paint(Graphics g, JComponent c) {
+            AbstractButton b = (AbstractButton) c;
+            ButtonModel m = b.getModel();
             Graphics2D g2 = (Graphics2D) g.create();
             suavizar(g2);
-            Color c = !isEnabled() ? new Color(0x9CA3AF)
-                    : getModel().isPressed() ? presionado
-                    : getModel().isRollover() ? hover : fondo;
-            g2.setColor(c);
-            g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 12, 12));
-            if (borde != null) {
+            boolean marcado = seleccionado != null && m.isSelected();
+            Color color = !b.isEnabled() ? (fondo == null ? null : fondo == Color.WHITE ? FONDO_CLARO : DESHABILITADO)
+                    : marcado ? seleccionado
+                    : m.isPressed() ? presionado
+                    : m.isRollover() ? hover : fondo;
+            if (color != null) {
+                g2.setColor(color);
+                g2.fill(new RoundRectangle2D.Float(0, 0, c.getWidth(), c.getHeight(), 12, 12));
+            }
+            if (borde != null && !marcado) {
                 g2.setColor(borde);
-                g2.draw(new RoundRectangle2D.Float(0.5f, 0.5f, getWidth() - 1, getHeight() - 1, 12, 12));
+                g2.draw(new RoundRectangle2D.Float(0.5f, 0.5f, c.getWidth() - 1, c.getHeight() - 1, 12, 12));
             }
             g2.dispose();
-            super.paintComponent(g);
-        }
-    }
-
-    private static final class BotonSegmento extends JToggleButton {
-
-        BotonSegmento(String texto) {
-            super(texto);
-            setFont(fuente(Font.BOLD, 13f));
-            setContentAreaFilled(false);
-            setBorderPainted(false);
-            setFocusPainted(false);
-            setOpaque(false);
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            setPreferredSize(new Dimension(150, 36));
+            super.paint(g, c);
         }
 
         @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
+        protected void paintText(Graphics g, AbstractButton b, Rectangle r, String text) {
+            Graphics2D g2 = (Graphics2D) g;
             suavizar(g2);
-            setForeground(isSelected() ? Color.WHITE : TEXTO_SUAVE);
-            if (isSelected()) {
-                g2.setColor(PRIMARIO);
-                g2.fill(new RoundRectangle2D.Float(2, 2, getWidth() - 4, getHeight() - 4, 10, 10));
-            }
-            g2.dispose();
-            super.paintComponent(g);
-        }
-    }
-
-    public static class PanelDegradado extends JPanel {
-
-        public PanelDegradado() {
-            setOpaque(true);
+            boolean marcado = seleccionado != null && b.getModel().isSelected();
+            g2.setColor(marcado ? Color.WHITE : !b.isEnabled() && texto != Color.WHITE ? DESHABILITADO : texto);
+            FontMetrics fm = g2.getFontMetrics();
+            BasicGraphicsUtils.drawStringUnderlineCharAt(b, g2, text, -1, r.x, r.y + fm.getAscent());
         }
 
         @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            suavizar(g2);
-            int w = getWidth();
-            int h = getHeight();
-            g2.setPaint(new GradientPaint(0, 0, AZUL_OSCURO, w, h, PRIMARIO));
-            g2.fillRect(0, 0, w, h);
-            g2.setColor(new Color(255, 255, 255, 18));
-            g2.fill(new Ellipse2D.Float(w * 0.55f, -h * 0.25f, h * 0.7f, h * 0.7f));
-            g2.setColor(new Color(255, 255, 255, 14));
-            g2.fill(new Ellipse2D.Float(-w * 0.25f, h * 0.65f, w * 0.8f, w * 0.8f));
-            g2.dispose();
+        protected void paintFocus(Graphics g, AbstractButton b, Rectangle viewRect, Rectangle textRect, Rectangle iconRect) {
+        }
+
+        @Override
+        public Dimension getPreferredSize(JComponent c) {
+            Dimension d = super.getPreferredSize(c);
+            return d == null ? null : new Dimension(d.width, Math.max(d.height, 36));
         }
     }
 
-    public static class LogoGafas extends JComponent {
+    private static final class IconoGafas implements Icon {
 
         private final int ancho;
         private final Color color;
 
-        public LogoGafas(int ancho, Color color) {
+        IconoGafas(int ancho, Color color) {
             this.ancho = ancho;
             this.color = color;
-            setPreferredSize(new Dimension(ancho, ancho / 2));
-            setMinimumSize(getPreferredSize());
-            setMaximumSize(getPreferredSize());
         }
 
         @Override
-        protected void paintComponent(Graphics g) {
+        public void paintIcon(Component c, Graphics g, int x, int y) {
             Graphics2D g2 = (Graphics2D) g.create();
             suavizar(g2);
+            g2.translate(x, y);
             float trazo = Math.max(3f, ancho / 22f);
             g2.setStroke(new BasicStroke(trazo, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             g2.setColor(color);
             float lente = ancho * 0.38f;
-            float y = (getHeight() - lente) / 2f;
+            float ly = (getIconHeight() - lente) / 2f;
             float x1 = trazo;
             float x2 = ancho - lente - trazo;
-            g2.draw(new Ellipse2D.Float(x1, y, lente, lente));
-            g2.draw(new Ellipse2D.Float(x2, y, lente, lente));
-            float cy = y + lente * 0.4f;
+            g2.draw(new Ellipse2D.Float(x1, ly, lente, lente));
+            g2.draw(new Ellipse2D.Float(x2, ly, lente, lente));
+            float cy = ly + lente * 0.4f;
             g2.drawArc((int) (x1 + lente), (int) (cy - lente * 0.25f), (int) (x2 - x1 - lente), (int) (lente * 0.5f), 0, 180);
-            g2.drawLine((int) x1, (int) (y + lente * 0.3f), 0, (int) (y + lente * 0.05f));
-            g2.drawLine((int) (x2 + lente), (int) (y + lente * 0.3f), ancho, (int) (y + lente * 0.05f));
+            g2.drawLine((int) x1, (int) (ly + lente * 0.3f), 0, (int) (ly + lente * 0.05f));
+            g2.drawLine((int) (x2 + lente), (int) (ly + lente * 0.3f), ancho, (int) (ly + lente * 0.05f));
             g2.dispose();
         }
-    }
 
-    public static JLabel textoCentrado(String texto, Color color) {
-        JLabel l = new JLabel(texto, SwingConstants.CENTER);
-        l.setFont(fuente(Font.PLAIN, 13f));
-        l.setForeground(color);
-        return l;
+        @Override
+        public int getIconWidth() {
+            return ancho;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return ancho / 2;
+        }
     }
 }

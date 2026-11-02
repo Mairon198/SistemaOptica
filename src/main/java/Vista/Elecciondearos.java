@@ -46,6 +46,7 @@ public class Elecciondearos extends javax.swing.JFrame {
             filtrar();
             cargarApartados();
         });
+        EstiloUI.aplicarTema(this, pnlEncabezado, btnApartar, btnFiltrar);
     }
 
     /**

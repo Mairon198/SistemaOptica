@@ -64,6 +64,7 @@ public class FrmVentas extends javax.swing.JFrame {
                 UtilVista.ejecutar(FrmVentas.this, FrmVentas.this::cargarMediciones);
             }
         });
+        EstiloUI.aplicarTema(this, pnlEncabezado, btnRegistrar, btnAgregar);
     }
 
     /**

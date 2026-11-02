@@ -1,7 +1,9 @@
 package servicio;
 
+import dao.ClienteDAO;
 import dao.RegistroDAO;
 import dao.UsuarioDAO;
+import dao.impl.ClienteDAOImpl;
 import dao.impl.RegistroDAOImpl;
 import dao.impl.UsuarioDAOImpl;
 import java.nio.charset.StandardCharsets;
@@ -26,14 +28,16 @@ public class RegistroService {
 
     private final UsuarioDAO usuarioDAO;
     private final RegistroDAO registroDAO;
+    private final ClienteDAO clienteDAO;
 
     public RegistroService() {
-        this(new UsuarioDAOImpl(), new RegistroDAOImpl());
+        this(new UsuarioDAOImpl(), new RegistroDAOImpl(), new ClienteDAOImpl());
     }
 
-    public RegistroService(UsuarioDAO usuarioDAO, RegistroDAO registroDAO) {
+    public RegistroService(UsuarioDAO usuarioDAO, RegistroDAO registroDAO, ClienteDAO clienteDAO) {
         this.usuarioDAO = usuarioDAO;
         this.registroDAO = registroDAO;
+        this.clienteDAO = clienteDAO;
     }
 
     public static boolean registroVendedorHabilitado() {
@@ -45,13 +49,20 @@ public class RegistroService {
                                  char[] password, char[] confirmacion) throws ValidacionException {
         nombres = requerido(nombres, "Nombres", 100);
         apellidos = requerido(apellidos, "Apellidos", 100);
-        dni = opcional(dni, "DNI", DNI, 20);
+        dni = requerido(dni, "DNI", 20);
+        if (!DNI.matcher(dni).matches()) {
+            throw new ValidacionException("El campo 'DNI' no tiene un formato válido.");
+        }
         telefono = opcional(telefono, "Teléfono", TELEFONO, 20);
         direccion = opcionalLibre(direccion, "Dirección", 200);
         usuario = validarUsuario(usuario);
         email = validarEmail(email);
         validarPassword(password, confirmacion, usuario);
         validarDisponible(usuario, email);
+        //El DNI se usa para buscar el historial de mediciones, no se puede repetir
+        if (clienteDAO.buscarPorDni(dni) != null) {
+            throw new ValidacionException("Ya existe un cliente registrado con ese DNI.");
+        }
 
         Cliente c = new Cliente();
         c.setNombres(nombres);

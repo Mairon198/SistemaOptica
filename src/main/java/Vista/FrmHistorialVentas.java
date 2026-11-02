@@ -33,6 +33,7 @@ public class FrmHistorialVentas extends javax.swing.JFrame {
             }
         });
         UtilVista.ejecutar(this, this::cargarVentas);
+        EstiloUI.aplicarTema(this, pnlEncabezado, btnActualizar);
     }
 
     /**

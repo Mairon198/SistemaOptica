@@ -39,6 +39,7 @@ public class FrmMenuVendedor extends javax.swing.JFrame {
                 actualizarAlertaStock(false);
             }
         });
+        EstiloUI.aplicarTema(this, pnlEncabezado, btnInventario, btnMediciones, btnNuevaVenta, btnHistorial);
     }
 
     /**

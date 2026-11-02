@@ -3,3 +3,6 @@
 db.url=jdbc:sqlserver://SERVIDOR.database.windows.net:1433;databaseName=OpticaDB;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
 db.user=USUARIO
 db.password=CONTRASEÑA
+
+# Código que se pide para crear cuentas de vendedor (si se deja vacío, no se pueden crear)
+registro.codigo.vendedor=

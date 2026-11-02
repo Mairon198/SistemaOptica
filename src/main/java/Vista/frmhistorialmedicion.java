@@ -39,6 +39,9 @@ public class frmhistorialmedicion extends javax.swing.JFrame {
         if (dniCliente != null && !dniCliente.isEmpty()) {
             cargarHistorialDirecto(dniCliente);
         }
+        jLabel1.setVisible(false);
+        EstiloUI.agregarEncabezado(this, "Historial de mediciones", "Mediciones de la vista registradas en la óptica");
+        EstiloUI.aplicarTema(this, null);
     }
 
     private void cargarHistorialDirecto(String dniBusqueda) {

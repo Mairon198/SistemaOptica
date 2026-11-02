@@ -26,6 +26,7 @@ public class FrmMenuCliente extends javax.swing.JFrame {
         lblBienvenida.setText("Bienvenido, " + usuario.getNombreMostrar());
         setSize(560, 330);
         setLocationRelativeTo(null);
+        EstiloUI.aplicarTema(this, pnlEncabezado, btnHistorialMediciones, btnCatalogo);
     }
 
     /**
