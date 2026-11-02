@@ -1,21 +1,22 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.concurrent.ExecutionException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
-import java.awt.Color;
 import modelo.Usuario;
 import servicio.AuthException;
 import servicio.AuthService;
@@ -23,87 +24,130 @@ import util.SeguridadUtil;
 
 public class LoginFrame extends JFrame {
 
-    private final JTextField txtUsuario = new JTextField(20);
-    private final JPasswordField txtPassword = new JPasswordField(20);
-    private final JButton btnIngresar = new JButton("Ingresar");
-    private final JButton btnCrearCuenta = new JButton("Crear cuenta");
-    private final JButton btnSalir = new JButton("Salir");
-    private final JLabel lblMensaje = new JLabel(" ", SwingConstants.CENTER);
+    private final JTextField txtUsuario = EstiloUI.campo(new JTextField());
+    private final JPasswordField txtPassword = EstiloUI.campo(new JPasswordField());
+    private final JCheckBox chkMostrar = EstiloUI.casilla("Mostrar contraseña");
+    private final JButton btnIngresar = EstiloUI.botonPrimario("Ingresar");
+    private final JButton btnCrearCuenta = EstiloUI.botonEnlace("Crear cuenta nueva");
+    private final JLabel lblMensaje = EstiloUI.mensajeError(44);
     private final AuthService authService = new AuthService();
+    private final char echoOriginal = txtPassword.getEchoChar();
 
     public LoginFrame() {
         super("Sistema Óptica - Iniciar sesión");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         construirInterfaz();
         pack();
-        setMinimumSize(new Dimension(380, getHeight()));
         setResizable(false);
         setLocationRelativeTo(null);
         getRootPane().setDefaultButton(btnIngresar);
     }
 
     private void construirInterfaz() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(24, 32, 24, 32));
+        JPanel raiz = new JPanel(new BorderLayout());
+        raiz.add(crearPanelMarca(), BorderLayout.WEST);
+        raiz.add(crearPanelFormulario(), BorderLayout.CENTER);
+        setContentPane(raiz);
+    }
+
+    private JPanel crearPanelMarca() {
+        JPanel marca = new EstiloUI.PanelDegradado();
+        marca.setPreferredSize(new Dimension(340, 500));
+        marca.setLayout(new GridBagLayout());
+
+        JPanel contenido = new JPanel();
+        contenido.setOpaque(false);
+        contenido.setLayout(new javax.swing.BoxLayout(contenido, javax.swing.BoxLayout.Y_AXIS));
+
+        EstiloUI.LogoGafas logo = new EstiloUI.LogoGafas(130, Color.WHITE);
+        logo.setAlignmentX(0.5f);
+        JLabel nombre = EstiloUI.titulo("Sistema Óptica", 28f, Color.WHITE);
+        nombre.setAlignmentX(0.5f);
+        JLabel lema = EstiloUI.subtitulo("Ventas, inventario y clientes", new Color(0xCCFBF1));
+        lema.setAlignmentX(0.5f);
+
+        contenido.add(javax.swing.Box.createHorizontalStrut(290));
+        contenido.add(logo);
+        contenido.add(javax.swing.Box.createVerticalStrut(22));
+        contenido.add(nombre);
+        contenido.add(javax.swing.Box.createVerticalStrut(8));
+        contenido.add(lema);
+
+        marca.add(contenido);
+        return marca;
+    }
+
+    private JPanel crearPanelFormulario() {
+        JPanel fondo = new JPanel(new GridBagLayout());
+        fondo.setBackground(Color.WHITE);
+
+        JPanel form = new JPanel(new GridBagLayout());
+        form.setOpaque(false);
+        form.setPreferredSize(new Dimension(340, 400));
+
         GridBagConstraints gc = new GridBagConstraints();
         gc.gridx = 0;
+        gc.weightx = 1;
         gc.fill = GridBagConstraints.HORIZONTAL;
-        gc.insets = new Insets(4, 0, 4, 0);
+        gc.anchor = GridBagConstraints.WEST;
+        int fila = 0;
 
-        JLabel titulo = new JLabel("Sistema Óptica", SwingConstants.CENTER);
-        titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 22f));
-        gc.gridy = 0;
-        gc.insets = new Insets(0, 0, 16, 0);
-        panel.add(titulo, gc);
+        gc.gridy = fila++;
+        gc.insets = new Insets(0, 0, 4, 0);
+        form.add(EstiloUI.titulo("Bienvenido", 26f, EstiloUI.TEXTO), gc);
 
-        gc.insets = new Insets(4, 0, 2, 0);
-        gc.gridy = 1;
-        panel.add(new JLabel("Usuario o correo"), gc);
-        gc.gridy = 2;
+        gc.gridy = fila++;
+        gc.insets = new Insets(0, 0, 22, 0);
+        form.add(EstiloUI.subtitulo("Inicia sesión para continuar", EstiloUI.TEXTO_SUAVE), gc);
+
+        gc.gridy = fila++;
+        gc.insets = new Insets(0, 0, 12, 0);
+        form.add(EstiloUI.campoConEtiqueta("Usuario o correo", txtUsuario), gc);
+
+        gc.gridy = fila++;
+        gc.insets = new Insets(0, 0, 4, 0);
+        form.add(EstiloUI.campoConEtiqueta("Contraseña", txtPassword), gc);
+
+        gc.gridy = fila++;
         gc.insets = new Insets(0, 0, 8, 0);
-        panel.add(txtUsuario, gc);
+        form.add(chkMostrar, gc);
 
-        gc.insets = new Insets(4, 0, 2, 0);
-        gc.gridy = 3;
-        panel.add(new JLabel("Contraseña"), gc);
-        gc.gridy = 4;
+        gc.gridy = fila++;
         gc.insets = new Insets(0, 0, 8, 0);
-        panel.add(txtPassword, gc);
+        form.add(lblMensaje, gc);
 
-        lblMensaje.setForeground(new Color(180, 30, 30));
-        gc.gridy = 5;
-        panel.add(lblMensaje, gc);
+        gc.gridy = fila++;
+        gc.insets = new Insets(0, 0, 18, 0);
+        form.add(btnIngresar, gc);
 
-        gc.gridy = 6;
-        gc.insets = new Insets(8, 0, 0, 0);
-        panel.add(btnIngresar, gc);
+        JPanel registro = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 0));
+        registro.setOpaque(false);
+        JLabel pregunta = EstiloUI.textoCentrado("¿No tienes cuenta?", EstiloUI.TEXTO_SUAVE);
+        pregunta.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+        registro.add(pregunta);
+        registro.add(btnCrearCuenta);
+        gc.gridy = fila;
+        gc.insets = new Insets(0, 0, 0, 0);
+        form.add(registro, gc);
 
-        JPanel botones = new JPanel(new java.awt.GridLayout(1, 2, 8, 0));
-        botones.add(btnCrearCuenta);
-        botones.add(btnSalir);
-        gc.gridy = 7;
-        gc.insets = new Insets(8, 0, 0, 0);
-        panel.add(botones, gc);
+        fondo.add(form);
+        fondo.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
+        chkMostrar.addActionListener(e
+                -> txtPassword.setEchoChar(chkMostrar.isSelected() ? (char) 0 : echoOriginal));
         btnIngresar.addActionListener(e -> intentarLogin());
-        btnCrearCuenta.addActionListener(e -> {
-            RegistroClientes registro = new RegistroClientes();
-            registro.setLocationRelativeTo(this);
-            registro.setVisible(true);
-        });
-        btnSalir.addActionListener(e -> {
-            dispose();
-            System.exit(0);
-        });
+        btnCrearCuenta.addActionListener(e -> new RegistroUsuarioDialog(this, usuario -> {
+            txtUsuario.setText(usuario);
+            txtPassword.requestFocusInWindow();
+        }).setVisible(true));
 
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(panel, BorderLayout.CENTER);
+        return fondo;
     }
 
     private void intentarLogin() {
         final String identificador = txtUsuario.getText();
         final char[] password = txtPassword.getPassword();
-        lblMensaje.setText(" ");
+        EstiloUI.mostrarError(lblMensaje, null);
         btnIngresar.setEnabled(false);
         btnIngresar.setText("Verificando...");
 
@@ -123,9 +167,9 @@ public class LoginFrame extends JFrame {
                     txtPassword.setText("");
                     dispose();
                     Navegador.abrirSegunRol(usuario);
-                } catch (java.util.concurrent.ExecutionException ex) {
+                } catch (ExecutionException ex) {
                     Throwable causa = ex.getCause();
-                    lblMensaje.setText(causa instanceof AuthException
+                    EstiloUI.mostrarError(lblMensaje, causa instanceof AuthException
                             ? causa.getMessage() : "Error inesperado al iniciar sesión.");
                     txtPassword.setText("");
                     txtPassword.requestFocusInWindow();
